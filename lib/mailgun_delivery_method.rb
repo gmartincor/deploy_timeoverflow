@@ -8,21 +8,17 @@ class MailgunDeliveryMethod
   def deliver!(mail)
     mg_client = Mailgun::Client.new(settings[:api_key])
 
-    # Normaliza el contenido del correo
     html_part = mail.html_part ? mail.html_part.body.to_s : nil
     text_part = mail.text_part ? mail.text_part.body.to_s : mail.body.to_s
 
-    # Construye el mensaje
     message_params = {
       from: mail[:from].to_s,
       subject: mail.subject,
       text: text_part
     }
 
-    # Añadir HTML si existe
     message_params[:html] = html_part if html_part
 
-    # Manejar múltiples destinatarios
     if mail.to
       message_params[:to] = mail.to
     end
@@ -35,7 +31,6 @@ class MailgunDeliveryMethod
       message_params[:bcc] = mail.bcc
     end
 
-    # Enviar el correo
     domain = settings[:domain]
     mg_client.send_message(domain, message_params)
   end
