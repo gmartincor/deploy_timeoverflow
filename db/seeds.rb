@@ -133,6 +133,7 @@ Organization.find_or_create_by(name: "Banco del tiempo 3")
 Organization.find_or_create_by(name: "Banco del tiempo 4")
 Organization.find_or_create_by(name: "Banco del tiempo 5")
 
+
 # Admin3
 User.find_or_create_by(email: "admin3@timeoverflow.org") do |user|
   user.terms_accepted_at = DateTime.now.utc
@@ -185,6 +186,21 @@ User.find_or_create_by(email: "user4@timeoverflow.org") do |user|
   user.password = "1234test"
   user.password_confirmation = "1234test"
   user.username = "Pablo Rodríguez"
+  user.date_of_birth = Date.parse("1990-04-17")
+  user.phone = "658974123"
+  user.alt_phone = "931248756"
+  user.description = <<-EOF
+  Programador y aficionado a la cocina vegetariana. Busco intercambios relacionados con tecnología.
+  EOF
+end
+
+#userGuille
+User.find_or_create_by(email: "guillermomc007@gmail.com") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Guillermo Martín"
   user.date_of_birth = Date.parse("1990-04-17")
   user.phone = "658974123"
   user.alt_phone = "931248756"
@@ -254,6 +270,13 @@ User.find_by(email: "user4@timeoverflow.org").members.
   member.manager = false
   member.entry_date = DateTime.now.utc
 end
+
+User.find_by(email: "guillermomc007@gmail.com").members.
+  find_or_create_by(organization: org4) do |member|
+  member.manager = false
+  member.entry_date = DateTime.now.utc
+end
+
 
 # Add memberships for admin5/user5 to organization 5
 User.find_by(email: "admin5@timeoverflow.org").members.
@@ -360,6 +383,276 @@ Offer.find_or_create_by(title: "Pequeñas reparaciones de casa") do |post|
   post.user_id = 3
   post.tags = ["casa", "manitas"]
   post.organization_id = 1
+end
+
+# Obtener IDs de usuarios
+admin3_id = User.find_by(email: "admin3@timeoverflow.org").id
+user3_id = User.find_by(email: "user3@timeoverflow.org").id
+admin4_id = User.find_by(email: "admin4@timeoverflow.org").id
+user4_id = User.find_by(email: "user4@timeoverflow.org").id
+guille_id = User.find_by(email: "guillermomc007@gmail.com").id
+admin5_id = User.find_by(email: "admin5@timeoverflow.org").id
+user5_id = User.find_by(email: "user5@timeoverflow.org").id
+
+# Ofertas para admin3 (Banco 3)
+Offer.find_or_create_by(title: "Asesoramiento legal básico") do |post|
+  post.description = <<-EOF
+  Ofrezco orientación legal básica en temas de consumo, laborales y administrativos. 
+  No sustituye el asesoramiento de un abogado pero puedo ayudarte a entender mejor 
+  tus derechos y opciones antes de acudir a un profesional.
+  EOF
+  post.category_id = 8 # Asesoramiento
+  post.user_id = admin3_id
+  post.tags = ["Legal", "Derechos", "Consumo"]
+  post.organization_id = org3.id
+end
+
+Offer.find_or_create_by(title: "Clases de guitarra española") do |post|
+  post.description = <<-EOF
+  Imparto clases de guitarra española para principiantes y nivel intermedio. 
+  Aprenderás técnicas básicas, acordes principales y a tocar tus primeras canciones.
+  Clases individuales o en pequeños grupos de máximo 3 personas.
+  EOF
+  post.category_id = 6 # Clases
+  post.user_id = admin3_id
+  post.tags = ["Música", "Guitarra", "Aprendizaje"]
+  post.organization_id = org3.id
+end
+
+Offer.find_or_create_by(title: "Acompañamiento a personas mayores") do |post|
+  post.description = <<-EOF
+  Ofrezco compañía a personas mayores: paseos, lectura, conversación o simplemente estar presente. 
+  La soledad puede ser difícil y a veces solo hace falta alguien con quien hablar 
+  o compartir un rato agradable.
+  EOF
+  post.category_id = 1 # Acompañamiento
+  post.user_id = admin3_id
+  post.tags = ["Mayores", "Compañía", "Paseos"]
+  post.organization_id = org3.id
+end
+
+# Ofertas para user3 (Banco 3)
+Offer.find_or_create_by(title: "Preparación de comidas saludables") do |post|
+  post.description = <<-EOF
+  Cocino lotes de comidas saludables que puedes congelar para toda la semana. 
+  Especialidad en dietas equilibradas, bajas en calorías pero sabrosas. 
+  También puedo enseñarte recetas fáciles para que aprendas a hacerlo tú mismo/a.
+  EOF
+  post.category_id = 3 # Tareas domésticas
+  post.user_id = user3_id
+  post.tags = ["Cocina", "Saludable", "Batch cooking"]
+  post.organization_id = org3.id
+end
+
+Offer.find_or_create_by(title: "Masajes descontracturantes") do |post|
+  post.description = <<-EOF
+  Realizo masajes para aliviar tensiones musculares, especialmente en espalda, 
+  hombros y cuello. Tengo formación en masaje terapéutico y experiencia 
+  tratando problemas comunes derivados del estrés y malas posturas.
+  EOF
+  post.category_id = 2 # Salud
+  post.user_id = user3_id
+  post.tags = ["Masaje", "Relajación", "Terapia"]
+  post.organization_id = org3.id
+end
+
+Offer.find_or_create_by(title: "Préstamo de herramientas de jardinería") do |post|
+  post.description = <<-EOF
+  Dispongo de un set completo de herramientas de jardinería que presto: 
+  tijeras de podar, palas pequeñas, rastrillo, guantes y más. 
+  También puedo darte consejos sobre cuidado de plantas si lo necesitas.
+  EOF
+  post.category_id = 10 # Préstamo de herramientas
+  post.user_id = user3_id
+  post.tags = ["Jardinería", "Herramientas", "Plantas"]
+  post.organization_id = org3.id
+end
+
+# Ofertas para admin4 (Banco 4)
+Offer.find_or_create_by(title: "Ayuda con trámites administrativos") do |post|
+  post.description = <<-EOF
+  Te ayudo con formularios, solicitudes y trámites online con la administración pública.
+  Tengo experiencia en gestiones con hacienda, seguridad social, ayuntamiento, etc.
+  También puedo explicarte cómo hacerlos para futuras ocasiones.
+  EOF
+  post.category_id = 4 # Tareas administrativas
+  post.user_id = admin4_id
+  post.tags = ["Trámites", "Burocracia", "Ayuda"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Organización de eventos y celebraciones") do |post|
+  post.description = <<-EOF
+  Planificación de pequeños eventos: cumpleaños, reuniones, celebraciones. 
+  Me encargo de la organización, ideas para decoración, actividades y todo 
+  lo necesario para que disfrutes sin preocupaciones de tu evento.
+  EOF
+  post.category_id = 7 # Ocio
+  post.user_id = admin4_id
+  post.tags = ["Eventos", "Celebraciones", "Organización"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Cortes de pelo básicos") do |post|
+  post.description = <<-EOF
+  Realizo cortes de pelo sencillos para todas las edades. No soy profesional pero
+  tengo experiencia cortando el pelo a familiares y amigos. Ideal para quien 
+  busca un mantenimiento simple de su peinado sin gastar en peluquería.
+  EOF
+  post.category_id = 5 # Estética
+  post.user_id = admin4_id
+  post.tags = ["Peluquería", "Corte", "Pelo"]
+  post.organization_id = org4.id
+end
+
+# Ofertas para user4 (Banco 4)
+Offer.find_or_create_by(title: "Reparación de ordenadores y móviles") do |post|
+  post.description = <<-EOF
+  Soluciono problemas comunes de ordenadores (Windows/Mac) y smartphones.
+  Elimino virus, optimizo el rendimiento, recupero datos borrados, instalo programas
+  y hago pequeñas reparaciones. ¡No tires tu dispositivo antes de consultarme!
+  EOF
+  post.category_id = 9 # Otros
+  post.user_id = user4_id
+  post.tags = ["Informática", "Reparación", "Tecnología"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Clases de programación para principiantes") do |post|
+  post.description = <<-EOF
+  Imparto clases para iniciarse en la programación desde cero. Aprenderás 
+  conceptos básicos y a crear tus primeras aplicaciones sencillas. Adaptado a 
+  cada persona, avanzando a tu ritmo y orientado a tus intereses particulares.
+  EOF
+  post.category_id = 6 # Clases
+  post.user_id = user4_id
+  post.tags = ["Programación", "Informática", "Aprendizaje"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Paseo y cuidado de mascotas") do |post|
+  post.description = <<-EOF
+  Me ofrezco para pasear a tu perro o cuidar de tus mascotas durante ausencias cortas.
+  Tengo experiencia con perros, gatos y animales pequeños. Responsable y cariñoso
+  con los animales, asegurando que reciban los cuidados y atención que necesitan.
+  EOF
+  post.category_id = 1 # Acompañamiento
+  post.user_id = user4_id
+  post.tags = ["Mascotas", "Animales", "Cuidados"]
+  post.organization_id = org4.id
+end
+
+# Ofertas para Guillermo (Banco 4)
+Offer.find_or_create_by(title: "Clases de desarrollo web frontend") do |post|
+  post.description = <<-EOF
+  Ofrezco clases personalizadas de HTML, CSS y JavaScript para principiantes
+  que quieran aprender desarrollo web frontend. Aprenderás a crear sitios
+  web responsivos y atractivos desde cero. Incluyo material práctico y
+  ejercicios para consolidar conocimientos.
+  EOF
+  post.category_id = 6 # Clases
+  post.user_id = guille_id
+  post.tags = ["Desarrollo web", "Frontend", "Programación"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Asesoramiento en nutrición vegetariana") do |post|
+  post.description = <<-EOF
+  Comparto conocimientos sobre alimentación vegetariana equilibrada: planificación 
+  de menús semanales, alternativas proteicas, combinación de alimentos y recetas
+  saludables. Te ayudo a incorporar más vegetales a tu dieta de forma sabrosa y nutritiva.
+  EOF
+  post.category_id = 2 # Salud
+  post.user_id = guille_id
+  post.tags = ["Nutrición", "Vegetariano", "Alimentación"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Reparación de bicicletas") do |post|
+  post.description = <<-EOF
+  Realizo mantenimiento y pequeñas reparaciones de bicicletas: ajuste de frenos,
+  cambios, pinchazo de ruedas, lubricación de cadena, etc. También puedo
+  asesorarte si estás pensando en comprar una bicicleta según tus necesidades.
+  EOF
+  post.category_id = 9 # Otros
+  post.user_id = guille_id
+  post.tags = ["Bicicletas", "Reparación", "Mantenimiento"]
+  post.organization_id = org4.id
+end
+
+# Ofertas para admin5 (Banco 5)
+Offer.find_or_create_by(title: "Yoga terapéutico") do |post|
+  post.description = <<-EOF
+  Sesiones de yoga adaptado para personas con movilidad reducida, 
+  dolores crónicos o recuperándose de lesiones. Ejercicios suaves 
+  con atención personalizada para mejorar tu bienestar físico y mental.
+  EOF
+  post.category_id = 2 # Salud
+  post.user_id = admin5_id
+  post.tags = ["Yoga", "Terapia", "Bienestar"]
+  post.organization_id = org5.id
+end
+
+Offer.find_or_create_by(title: "Asesoramiento en consumo responsable") do |post|
+  post.description = <<-EOF
+  Te oriento sobre cómo reducir tu huella ecológica, consumir de forma más 
+  responsable y ahorrar dinero. Desde consejos para compras más sostenibles
+  hasta ideas para reducir residuos en el hogar y aprovechar recursos.
+  EOF
+  post.category_id = 8 # Asesoramiento
+  post.user_id = admin5_id
+  post.tags = ["Ecología", "Sostenibilidad", "Consumo"]
+  post.organization_id = org5.id
+end
+
+Offer.find_or_create_by(title: "Costura y arreglos de ropa") do |post|
+  post.description = <<-EOF
+  Realizo arreglos básicos de ropa: dobladillos, zurcidos, botones, cremalleras, etc.
+  También puedo hacer pequeñas modificaciones para adaptar prendas a tu talla.
+  Dales una segunda vida a tus prendas favoritas.
+  EOF
+  post.category_id = 3 # Tareas domésticas
+  post.user_id = admin5_id
+  post.tags = ["Costura", "Arreglos", "Ropa"]
+  post.organization_id = org5.id
+end
+
+# Ofertas para user5 (Banco 5)
+Offer.find_or_create_by(title: "Diseño y mantenimiento de huertos urbanos") do |post|
+  post.description = <<-EOF
+  Ayudo a diseñar, crear y mantener pequeños huertos urbanos en terrazas, 
+  balcones o pequeños espacios. Asesoramiento sobre cultivos de temporada, 
+  técnicas ecológicas y soluciones para espacios reducidos.
+  EOF
+  post.category_id = 9 # Otros
+  post.user_id = user5_id
+  post.tags = ["Huerto", "Cultivo", "Ecológico"]
+  post.organization_id = org5.id
+end
+
+Offer.find_or_create_by(title: "Préstamo de libros y lecturas comentadas") do |post|
+  post.description = <<-EOF
+  Dispongo de una amplia biblioteca personal que puedo prestar. Además, 
+  organizo sesiones de lectura comentada donde compartimos impresiones 
+  sobre un mismo libro. Ideal para amantes de la literatura o personas 
+  que quieran fomentar su hábito de lectura.
+  EOF
+  post.category_id = 10 # Préstamo
+  post.user_id = user5_id
+  post.tags = ["Libros", "Lectura", "Literatura"]
+  post.organization_id = org5.id
+end
+
+Offer.find_or_create_by(title: "Gestión de redes sociales para iniciativas locales") do |post|
+  post.description = <<-EOF
+  Ayudo a pequeñas iniciativas comunitarias o proyectos locales a gestionar 
+  sus redes sociales: creación de contenido, programación, estrategias básicas 
+  para aumentar visibilidad. Especial atención a proyectos sociales o sostenibles.
+  EOF
+  post.category_id = 4 # Tareas administrativas
+  post.user_id = user5_id
+  post.tags = ["Redes sociales", "Marketing", "Comunicación"]
+  post.organization_id = org5.id
 end
 
 # Inquiries
