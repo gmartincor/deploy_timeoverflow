@@ -25,6 +25,7 @@ gem 'sidekiq-cron', '~> 1.12.0'
 gem 'aws-sdk-s3', '~> 1.94', require: false
 gem 'image_processing', '~> 1.12'
 gem 'active_storage_validations', '~> 1.1.3'
+gem 'mailgun-ruby', '~> 1.2'
 
 # Assets
 gem 'jquery-rails', '~> 4.4.0'
