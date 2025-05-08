@@ -1,6 +1,8 @@
+# Original organizations
 Organization.find_or_create_by(name: "Banco de Tiempo Local")
 Organization.find_or_create_by(name: "El otro Banco de Tiempo :)")
 
+# Original users
 User.find_or_create_by(email: "admin@timeoverflow.org") do |user|
   user.terms_accepted_at = DateTime.now.utc
   user.confirmed_at = DateTime.now.utc
@@ -83,6 +85,7 @@ User.find_or_create_by(email: "user2@timeoverflow.org") do |user|
   EOF
 end
 
+# Original memberships
 User.find_by(email: "admin@timeoverflow.org").members.
   find_or_create_by(organization_id: 1) do |member|
   member.manager = true
@@ -125,6 +128,147 @@ User.find_by(email: "user2@timeoverflow.org").members.
   member.entry_date = DateTime.now.utc
 end
 
+# New organizations
+Organization.find_or_create_by(name: "Banco del tiempo 3")
+Organization.find_or_create_by(name: "Banco del tiempo 4")
+Organization.find_or_create_by(name: "Banco del tiempo 5")
+
+# Admin3
+User.find_or_create_by(email: "admin3@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Carlos Administrador"
+  user.date_of_birth = Date.parse("1985-05-15")
+  user.phone = "652789123"
+  user.alt_phone = "932458791"
+  user.description = <<-EOF
+  Soy Carlos, administrador del Banco del tiempo 3. Estoy para ayudar en lo que necesites.
+  EOF
+end
+
+# User3
+User.find_or_create_by(email: "user3@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Marta García"
+  user.date_of_birth = Date.parse("1978-08-21")
+  user.phone = "645871236"
+  user.alt_phone = "934587123"
+  user.description = <<-EOF
+  Hola a todos! Me encanta intercambiar servicios y conocer gente nueva.
+  EOF
+end
+
+# Admin4
+User.find_or_create_by(email: "admin4@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Elena Fernández"
+  user.date_of_birth = Date.parse("1979-11-03")
+  user.phone = "612345789"
+  user.alt_phone = "932147856"
+  user.description = <<-EOF
+  Administradora del Banco del tiempo 4. Dispuesta a ayudar siempre.
+  EOF
+end
+
+# User4
+User.find_or_create_by(email: "user4@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Pablo Rodríguez"
+  user.date_of_birth = Date.parse("1990-04-17")
+  user.phone = "658974123"
+  user.alt_phone = "931248756"
+  user.description = <<-EOF
+  Programador y aficionado a la cocina vegetariana. Busco intercambios relacionados con tecnología.
+  EOF
+end
+
+# Admin5
+User.find_or_create_by(email: "admin5@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Laura Sánchez"
+  user.date_of_birth = Date.parse("1983-09-25")
+  user.phone = "675849231"
+  user.alt_phone = "934512687"
+  user.description = <<-EOF
+  Administradora del Banco del tiempo 5 enfocada en construir una comunidad activa y participativa.
+  EOF
+end
+
+# User5
+User.find_or_create_by(email: "user5@timeoverflow.org") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Miguel Torres"
+  user.date_of_birth = Date.parse("1988-12-12")
+  user.phone = "689521473"
+  user.alt_phone = "935478126"
+  user.description = <<-EOF
+  Apasionado de la jardinería y las manualidades. Dispuesto a compartir conocimientos.
+  EOF
+end
+
+# New memberships
+# Get organization references with the new names
+org3 = Organization.find_by(name: "Banco del tiempo 3")
+org4 = Organization.find_by(name: "Banco del tiempo 4")
+org5 = Organization.find_by(name: "Banco del tiempo 5")
+
+# Add memberships for admin3/user3 to organization 3
+User.find_by(email: "admin3@timeoverflow.org").members.
+  find_or_create_by(organization: org3) do |member|
+  member.manager = true
+  member.entry_date = DateTime.now.utc
+end
+
+User.find_by(email: "user3@timeoverflow.org").members.
+  find_or_create_by(organization: org3) do |member|
+  member.manager = false
+  member.entry_date = DateTime.now.utc
+end
+
+# Add memberships for admin4/user4 to organization 4
+User.find_by(email: "admin4@timeoverflow.org").members.
+  find_or_create_by(organization: org4) do |member|
+  member.manager = true
+  member.entry_date = DateTime.now.utc
+end
+
+User.find_by(email: "user4@timeoverflow.org").members.
+  find_or_create_by(organization: org4) do |member|
+  member.manager = false
+  member.entry_date = DateTime.now.utc
+end
+
+# Add memberships for admin5/user5 to organization 5
+User.find_by(email: "admin5@timeoverflow.org").members.
+  find_or_create_by(organization: org5) do |member|
+  member.manager = true
+  member.entry_date = DateTime.now.utc
+end
+
+User.find_by(email: "user5@timeoverflow.org").members.
+  find_or_create_by(organization: org5) do |member|
+  member.manager = false
+  member.entry_date = DateTime.now.utc
+end
+
+# Categories
 unless Category.exists?
   Category.connection.execute "ALTER SEQUENCE categories_id_seq RESTART;"
   [
@@ -137,6 +281,7 @@ unless Category.exists?
   end
 end
 
+# Offers
 Offer.find_or_create_by(title: "Ruby on Rails nivel principiante") do |post|
   post.description = <<-EOF
   Te enseño a trastear un poco sin cuidar el codigo, pero con mucho amor.
@@ -161,7 +306,7 @@ end
 Offer.find_or_create_by(title: "Yoga para principiantes") do |post|
   post.description = <<-EOF
   Comparteixo les tècniques que he après i he practicat de respiració i meditació (una és inherent a l´altra, l´altra és inherent a l´una).
-  En cada sessió: minuts de consciencia postural, cant de mantres, *breu escalfament** (movilització de l´articulacions i la columna vertebral) i una sèrie de PRANAYAMA (respiració) / MEDITACIÓ. Sessions de 1h aprox. *CAPACITACIÓ INTERNACIONAL DE MESTRES DE KUNDALINI IOGA, NIVELL I d’acord Yogi Bhajan. per la “KRI” (KUNDALINI RESEARCH INSTITUT)
+  En cada sessió: minuts de consciencia postural, cant de mantres, *breu escalfament** (movilització de l´articulacions i la columna vertebral) i una sèrie de PRANAYAMA (respiració) / MEDITACIÓ. Sessions de 1h aprox. *CAPACITACIÓ INTERNACIONAL DE MESTRES DE KUNDALINI IOGA, NIVELL I d'acord Yogi Bhajan. per la "KRI" (KUNDALINI RESEARCH INSTITUT)
   EOF
   post.category_id = 5
   post.user_id = 2
@@ -217,6 +362,7 @@ Offer.find_or_create_by(title: "Pequeñas reparaciones de casa") do |post|
   post.organization_id = 1
 end
 
+# Inquiries
 Inquiry.find_or_create_by(title: "Ayuda a organizarme con los tupper") do |post|
   post.description = <<-EOF
   Me cuesta **organizarme con los tupper** me gustaría poder preparar los tupper de toda la semana el domingo, pero para eso necesito consejos y organización ;)
