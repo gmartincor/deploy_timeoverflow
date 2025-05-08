@@ -76,6 +76,9 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :sidekiq
   # config.active_job.queue_name_prefix = "timeoverflow_production"
 
+  # SOLUCIÓN PARA RENDER (PLAN GRATUITO): Usa el adaptador inline en lugar de Sidekiq
+  config.active_job.queue_adapter = :inline
+
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -87,6 +90,9 @@ Rails.application.configure do
     host: ENV["MAIL_LINK_HOST"],
     protocol: ENV["MAIL_LINK_PROTO"] || "https"
   }
+
+  # SOLUCIÓN PARA RENDER (PLAN GRATUITO): Desactiva el uso de ActiveJob para correos
+  config.action_mailer.delivery_job = nil
 
   smtp_env = Hash[ENV.map do |k, v|
     if /^SMTP_(.*)$/ === k
