@@ -152,6 +152,7 @@ es:
       type_of_swaps: Tipos de intercambios
       users: Usuarios
       without_offers: Sin ofertas publicadas
+      alliance_transfers: Transferencias entre Organizaciones Alianzas
     terms_conditions: Términos del servicio
     tips:
       entertag: Entre etiquetas separadas por comas
@@ -517,6 +518,32 @@ es:
       reason: Razón
       to: Destino
       transfers: Todas las transferencias
+    alliance_transfers:
+      alliance_transfers: Transferencias entre Alianzas
+      no_alliances: No hay organizaciones aliadas activas. Para ver estadísticas de transferencias entre organizaciones, primero debes establecer una alianza.
+      alliance_with: "Alianza con %{org}"
+      filter_by_organization: "Filtrar por organización"
+      all_organizations: "Todas las organizaciones"
+      from_date: "Desde"
+      to_date: "Hasta"
+      apply_filters: "Aplicar filtros"
+      transfers_summary: "Resumen de transferencias"
+      organization: "Organización"
+      outgoing_transfers: "Transferencias enviadas"
+      incoming_transfers: "Transferencias recibidas"
+      outgoing_hours: "Horas enviadas"
+      incoming_hours: "Horas recibidas"
+      total_transfers: "Total transferencias"
+      balance_chart: "Balance con organizaciones aliadas"
+      balance_with_allied_organizations: "Balance de tiempo con organizaciones aliadas"
+      hours: "Horas"
+      balance: "Balance"
+      transfers_over_time: "Evolución temporal"
+      time_evolution_with: "Evolución temporal con %{org}"
+      outgoing: "Saliente"
+      incoming: "Entrante"
+      select_organization_for_details: "Selecciona una organización para ver detalles"
+      select_organization_subtitle: "Usa el filtro de organizaciones para ver la evolución temporal detallada"
     demographics:
       by_ages: Por edades
       by_gender: Por género

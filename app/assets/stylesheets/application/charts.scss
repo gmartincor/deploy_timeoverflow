@@ -1,0 +1,32 @@
+.chart-container {
+  min-width: 310px;
+  height: 400px;
+  margin: 0 auto;
+  
+  &--large {
+    height: 500px;
+  }
+  
+  &--medium {
+    height: 350px;
+  }
+  
+  &--small {
+    height: 250px;
+  }
+
+  &--alliance {
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+}
+
+.stats-card {
+  margin-bottom: 1.5rem;
+  
+  &__title {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+}

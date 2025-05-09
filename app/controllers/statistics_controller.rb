@@ -89,6 +89,95 @@ class StatisticsController < ApplicationController
                  per(20)
   end
 
+  def alliance_transfers
+    unless current_user.manages?(current_organization)
+      redirect_to root_path, alert: t("organization_alliances.not_authorized")
+      return
+    end
+
+    @allied_organizations = current_organization.allied_organizations
+
+    if @allied_organizations.empty?
+      @no_alliances = true
+      return
+    end
+
+    if params[:target_organization_id].present?
+      @target_organization = Organization.find_by(id: params[:target_organization_id])
+      @allied_organizations = @allied_organizations.where(id: params[:target_organization_id]) if @target_organization
+    end
+
+    from_date = params[:from].presence.try(:to_date) || DateTime.now.to_date - 3.month
+    to_date = params[:to].presence.try(:to_date) || DateTime.now.to_date
+
+    @transfers_summary = {}
+    @balance_by_org = {}
+    @transfers_by_month = {}
+
+    @allied_organizations.each do |org|
+      alliance = current_organization.alliance_with(org)
+      next unless alliance&.accepted?
+
+      outgoing_movements = Movement.where(account_id: current_organization.account.id)
+                                 .where("amount < 0")
+                                 .where(created_at: from_date.beginning_of_day..to_date.end_of_day)
+                                 .joins(:transfer)
+                                 .select { |m| m.transfer.movements.any? { |other_m| other_m.account_id == org.account.id } }
+
+      incoming_movements = Movement.where(account_id: current_organization.account.id)
+                                 .where("amount > 0")
+                                 .where(created_at: from_date.beginning_of_day..to_date.end_of_day)
+                                 .joins(:transfer)
+                                 .select { |m| m.transfer.movements.any? { |other_m| other_m.account_id == org.account.id } }
+
+      outgoing_transfers = outgoing_movements.map(&:transfer).uniq
+      incoming_transfers = incoming_movements.map(&:transfer).uniq
+
+      outgoing_total_seconds = outgoing_movements.sum(&:amount).abs
+      incoming_total_seconds = incoming_movements.sum(&:amount)
+
+      @transfers_summary[org.id] = {
+        name: org.name,
+        outgoing_count: outgoing_transfers.size,
+        incoming_count: incoming_transfers.size,
+        outgoing_hours: (outgoing_total_seconds / 3600.0).round(2),
+        incoming_hours: (incoming_total_seconds / 3600.0).round(2),
+        total_transfers: outgoing_transfers.size + incoming_transfers.size
+      }
+
+      @balance_by_org[org.id] = {
+        name: org.name,
+        balance: (incoming_total_seconds - outgoing_total_seconds) / 3600.0
+      }
+
+      months_data = {}
+      month_range = (from_date.to_date..to_date.to_date).map { |d| Date.new(d.year, d.month, 1) }.uniq
+
+      month_range.each do |month|
+        month_start = month.beginning_of_month
+        month_end = month.end_of_month
+
+        month_outgoing_movements = outgoing_movements.select { |m| m.created_at.between?(month_start, month_end) }
+        month_incoming_movements = incoming_movements.select { |m| m.created_at.between?(month_start, month_end) }
+
+        outgoing_seconds = month_outgoing_movements.sum(&:amount).abs
+        incoming_seconds = month_incoming_movements.sum(&:amount)
+
+        month_name = I18n.l(month, format: "%B %Y")
+        months_data[month_name] = {
+          outgoing: (outgoing_seconds / 3600.0).round(2),
+          incoming: (incoming_seconds / 3600.0).round(2),
+          balance: ((incoming_seconds - outgoing_seconds) / 3600.0).round(2)
+        }
+      end
+
+      @transfers_by_month[org.id] = {
+        name: org.name,
+        months: months_data
+      }
+    end
+  end
+
   protected
 
   def count_offers_by_label(offers)

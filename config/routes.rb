@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       get :without_offers
       get :type_swaps
       get :all_transfers
+      get :alliance_transfers
     end
   end
 

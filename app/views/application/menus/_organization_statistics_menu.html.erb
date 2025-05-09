@@ -46,5 +46,11 @@
         <%= t "application.navbar.statistics_all_transfers" %>
       <% end %>
     </li>
+    <li>
+      <%= link_to alliance_transfers_statistics_path, class: "dropdown-item" do %>
+        <%= glyph :stats %>
+        <%= t "application.navbar.alliance_transfers" %>
+      <% end %>
+    </li>
   </ul>
 </li>
