@@ -1,230 +1,418 @@
 <h1>
-  <%= t 'global.statistics' %>: <%= t '.alliance_transfers' %>
+    <%= t 'global.statistics' %>: <%= t '.alliance_transfers' %>
 </h1>
 
 <% if @no_alliances %>
-  <div class="alert alert-info">
-    <%= t '.no_alliances' %>
-  </div>
+    <div class="alert alert-info">
+        <%= t '.no_alliances' %>
+    </div>
 <% else %>
-  <div class="card">
-    <div class="card-body">
-      <% if @target_organization %>
-        <h2><%= t('.alliance_with', org: @target_organization.name) %></h2>
-      <% end %>
-      
-
-      <form class="row mb-4">
-        <div class="col-12 col-md-4">
-          <label for="target_organization_id" class="form-label"><%= t '.filter_by_organization' %></label>
-          <select name="target_organization_id" id="target_organization_id" class="form-control">
-            <option value=""><%= t '.all_organizations' %></option>
-            <% @allied_organizations.each do |org| %>
-              <option value="<%= org.id %>" <%= 'selected' if @target_organization&.id == org.id %>><%= org.name %></option>
+    <div class="card">
+        <div class="card-body">
+            <% if @target_organization %>
+                <h2><%= t('.alliance_with', org: @target_organization.name) %></h2>
             <% end %>
-          </select>
-        </div>
-        <div class="col-12 col-md-3">
-          <label for="from" class="form-label"><%= t '.from_date' %></label>
-          <input class="form-control" type="date" name="from" value="<%= params[:from] %>">
-        </div>
-        <div class="col-12 col-md-3">
-          <label for="to" class="form-label"><%= t '.to_date' %></label>
-          <input class="form-control" type="date" name="to" value="<%= params[:to] %>">
-        </div>
-        <div class="col-12 col-md-2 d-flex align-items-end">
-          <button class="btn btn-secondary w-100" type="submit">
-          <%= t '.apply_filters' %>
-          </button>
-        </div>
-      </form>
+            
+            <form class="row mb-4">
+                <div class="col-12 col-md-4">
+                    <label for="target_organization_id" class="form-label"><%= t '.filter_by_organization' %></label>
+                    <select name="target_organization_id" id="target_organization_id" class="form-control">
+                        <option value=""><%= t '.all_organizations' %></option>
+                        <% @allied_organizations.each do |org| %>
+                            <option value="<%= org.id %>" <%= 'selected' if @target_organization&.id == org.id %>><%= org.name %></option>
+                        <% end %>
+                    </select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <label for="from" class="form-label"><%= t '.from_date' %></label>
+                    <input class="form-control" type="date" name="from" value="<%= params[:from] %>">
+                </div>
+                <div class="col-12 col-md-3">
+                    <label for="to" class="form-label"><%= t '.to_date' %></label>
+                    <input class="form-control" type="date" name="to" value="<%= params[:to] %>">
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button class="btn btn-secondary w-100" type="submit">
+                    <%= t '.apply_filters' %>
+                    </button>
+                </div>
+            </form>
 
-      <h3 class="mt-4"><%= t '.transfers_summary' %></h3>
-      <div class="table-responsive">
-        <table class="table table-hover table-sm">
-          <thead>
-          <tr>
-            <th><%= t '.organization' %></th>
-            <th><%= t '.outgoing_transfers' %></th>
-            <th><%= t '.incoming_transfers' %></th>
-            <th><%= t '.outgoing_hours' %></th>
-            <th><%= t '.incoming_hours' %></th>
-            <th><%= t '.total_transfers' %></th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @transfers_summary.each do |org_id, data| %>
-            <tr>
-              <td><%= link_to data[:name], organization_path(org_id) %></td>
-              <td><%= data[:outgoing_count] %></td>
-              <td><%= data[:incoming_count] %></td>
-              <td><%= data[:outgoing_hours] %></td>
-              <td><%= data[:incoming_hours] %></td>
-              <td><%= data[:total_transfers] %></td>
-            </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
+            <h3 class="mt-4"><%= t '.transfers_summary' %></h3>
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead>
+                    <tr>
+                        <th><%= t '.organization' %></th>
+                        <th><%= t '.outgoing_transfers' %></th>
+                        <th><%= t '.incoming_transfers' %></th>
+                        <th><%= t '.outgoing_hours' %></th>
+                        <th><%= t '.incoming_hours' %></th>
+                        <th><%= t '.total_transfers' %></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @transfers_summary.each do |org_id, data| %>
+                        <tr>
+                            <td><%= link_to data[:name], organization_path(org_id) %></td>
+                            <td><%= data[:outgoing_count] %></td>
+                            <td><%= data[:incoming_count] %></td>
+                            <td><%= data[:outgoing_hours] %></td>
+                            <td><%= data[:incoming_hours] %></td>
+                            <td><%= data[:total_transfers] %></td>
+                        </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="card mt-4 stats-card">
-    <div class="card-body">
-      <h3 class="stats-card__title"><%= t '.balance_chart' %></h3>
-      <div id="balance-chart" class="chart-container chart-container--alliance"></div>
+    <div class="card mt-4 stats-card">
+        <div class="card-body">
+            <h3 class="stats-card__title"><%= t '.balance_chart' %></h3>
+            <div id="balance-chart" class="chart-container chart-container--alliance"></div>
+        </div>
     </div>
-  </div>
 
-  <div class="card mt-4 stats-card">
-    <div class="card-body">
-      <h3 class="stats-card__title"><%= t '.transfers_over_time' %></h3>
-      <div id="time-chart" class="chart-container chart-container--alliance"></div>
+    <div class="card mt-4 stats-card">
+        <div class="card-body">
+            <h3 class="stats-card__title"><%= t '.transfers_over_time' %></h3>
+            <div id="time-chart" class="chart-container chart-container--alliance"></div>
+        </div>
     </div>
-  </div>
 
-  <script type="text/javascript">
-    $(function () {
-    var balanceData = <%= raw @balance_by_org.map { |_, data| 
-      { 
-        y: data[:balance].round(2), 
-        color: data[:balance] >= 0 ? '#28a745' : '#dc3545',
-        name: data[:name]
-      } 
-    }.to_json %>;
-    
-    Highcharts.chart('balance-chart', {
-      chart: {
-        type: 'column'
-      },
-      title: {
-        text: '<%= t ".balance_with_allied_organizations" %>'
-      },
-      xAxis: {
-        categories: <%= raw @balance_by_org.map { |_, data| data[:name] }.to_json %>,
-        crosshair: true
-      },
-      yAxis: {
-        title: {
-        text: '<%= t ".hours" %>'
-        }
-      },
-      tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{point.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
-        footerFormat: '</table>',
-        shared: true,
-        useHTML: true
-      },
-      plotOptions: {
-        column: {
-        pointPadding: 0.2,
-        borderWidth: 0,
-        colorByPoint: true
-        }
-      },
-      series: [{
-        name: '<%= t ".balance" %>',
-        data: balanceData
-      }]
-    });
+    <script type="text/javascript">
+        $(function () {
+            var balanceData = <%= raw @balance_by_org.map { |_, data| 
+                balance = data[:balance].round(2)
+                if balance >= 0
+                    { 
+                        y: balance,
+                        name: data[:name],
+                        color: '#28a745'
+                    }
+                else
+                    {
+                        y: balance,
+                        name: data[:name],
+                        color: '#dc3545'
+                    }
+                end
+            }.to_json %>;
+            
+            Highcharts.chart('balance-chart', {
+                chart: {
+                    type: 'column',
+                    animation: true,
+                    style: {
+                        fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+                    }
+                },
+                title: {
+                    text: '<%= t ".balance_with_allied_organizations" %>',
+                    style: {
+                        fontSize: '18px',
+                        fontWeight: '500'
+                    }
+                },
+                xAxis: {
+                    categories: <%= raw @balance_by_org.map { |_, data| data[:name] }.to_json %>,
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '<%= t ".hours" %>',
+                        style: {
+                            fontWeight: '500'
+                        }
+                    },
+                    plotLines: [{
+                        value: 0,
+                        color: '#999',
+                        width: 1,
+                        zIndex: 5,
+                        dashStyle: 'shortdash',
+                        label: {
+                            text: '0',
+                            align: 'right',
+                            style: {
+                                color: '#666',
+                                fontSize: '10px'
+                            }
+                        }
+                    }]
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{point.color};padding:0;font-weight:bold">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderWidth: 0,
+                    shadow: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        colorByPoint: true,
+                        borderRadius: 3,
+                        animation: {
+                            duration: 1000
+                        },
+                        shadow: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            offsetX: 1,
+                            offsetY: 1,
+                            width: 2
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: '<%= t ".balance" %>',
+                    data: balanceData
+                }]
+            });
 
-    <% if @target_organization %>
-      <% org_data = @transfers_by_month[@target_organization.id] %>
-      <% if org_data %>
-        var months = <%= raw org_data[:months].keys.to_json %>;
-        var outgoingData = <%= raw org_data[:months].values.map { |v| v[:outgoing] }.to_json %>;
-        var incomingData = <%= raw org_data[:months].values.map { |v| v[:incoming] }.to_json %>;
-        var balanceData = <%= raw org_data[:months].values.map { |v| v[:balance] }.to_json %>;
-        
-        Highcharts.chart('time-chart', {
-        chart: {
-          zoomType: 'xy'
-        },
-        title: {
-          text: '<%= t ".time_evolution_with", org: @target_organization.name %>'
-        },
-        xAxis: [{
-          categories: months,
-          crosshair: true
-        }],
-        yAxis: [{
-          title: {
-            text: '<%= t ".hours" %>',
-            style: {
-            color: Highcharts.getOptions().colors[1]
-            }
-          },
-          labels: {
-            format: '{value}',
-            style: {
-            color: Highcharts.getOptions().colors[1]
-            }
-          }
-        }],
-        tooltip: {
-          shared: true
-        },
-        legend: {
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle'
-        },
-        series: [{
-          name: '<%= t ".outgoing" %>',
-          type: 'column',
-          color: '#dc3545',
-          data: outgoingData
-        }, {
-          name: '<%= t ".incoming" %>',
-          type: 'column',
-          color: '#28a745',
-          data: incomingData
-        }, {
-          name: '<%= t ".balance" %>',
-          type: 'spline',
-          data: balanceData
-        }]
+            <% if @target_organization %>
+                <% org_data = @transfers_by_month[@target_organization.id] %>
+                <% if org_data %>
+                    var months = <%= raw org_data[:months].keys.to_json %>;
+                    var outgoingData = <%= raw org_data[:months].values.map { |v| v[:outgoing] }.to_json %>;
+                    var incomingData = <%= raw org_data[:months].values.map { |v| v[:incoming] }.to_json %>;
+                    var balanceData = <%= raw org_data[:months].values.map { |v| v[:balance] }.to_json %>;
+                    
+                    var outgoingColor = '#dc3545';
+                    var incomingColor = '#28a745';
+                    
+                    Highcharts.chart('time-chart', {
+                        chart: {
+                            zoomType: 'xy',
+                            animation: true,
+                            style: {
+                                fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+                            }
+                        },
+                        title: {
+                            text: '<%= t ".time_evolution_with", org: @target_organization.name %>',
+                            style: {
+                                fontSize: '18px',
+                                fontWeight: '500'
+                            }
+                        },
+                        xAxis: [{
+                            categories: months,
+                            crosshair: true,
+                            labels: {
+                                style: {
+                                    fontSize: '11px'
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            title: {
+                                text: '<%= t ".hours" %>',
+                                style: {
+                                    fontWeight: '500',
+                                    fontSize: '13px'
+                                }
+                            },
+                            labels: {
+                                format: '{value}',
+                                style: {
+                                    fontSize: '11px'
+                                }
+                            },
+                            plotLines: [{
+                                value: 0,
+                                color: '#999',
+                                width: 1,
+                                zIndex: 5,
+                                dashStyle: 'shortdash',
+                                label: {
+                                    text: '0',
+                                    align: 'right',
+                                    style: {
+                                        color: '#666',
+                                        fontSize: '10px'
+                                    }
+                                }
+                            }]
+                        }],
+                        tooltip: {
+                            shared: true,
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            borderWidth: 0,
+                            shadow: true,
+                            useHTML: true,
+                            headerFormat: '<table><tr><th colspan="2">{point.key}</th></tr>',
+                            pointFormat: '<tr><td style="color: {series.color}; padding: 0">{series.name}: </td>' +
+                                '<td style="padding: 0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
+                            footerFormat: '</table>'
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            itemStyle: {
+                                fontWeight: '400'
+                            }
+                        },
+                        plotOptions: {
+                            column: {
+                                borderRadius: 3,
+                                animation: {
+                                    duration: 1000
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)',
+                                    offsetX: 1,
+                                    offsetY: 1,
+                                    width: 2
+                                }
+                            },
+                            spline: {
+                                lineWidth: 2,
+                                states: {
+                                    hover: {
+                                        lineWidth: 3
+                                    }
+                                },
+                                marker: {
+                                    enabled: true,
+                                    radius: 3,
+                                    symbol: 'circle'
+                                },
+                                animation: {
+                                    duration: 1500
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: '<%= t ".outgoing" %>',
+                            type: 'column',
+                            color: outgoingColor,
+                            data: outgoingData
+                        }, {
+                            name: '<%= t ".incoming" %>',
+                            type: 'column',
+                            color: incomingColor,
+                            data: incomingData
+                        }, {
+                            name: '<%= t ".balance" %>',
+                            type: 'spline',
+                            color: '#0052cc',
+                            lineWidth: 2,
+                            marker: {
+                                lineWidth: 2,
+                                lineColor: '#0052cc',
+                                fillColor: 'white',
+                                symbol: 'circle',
+                                radius: 4
+                            },
+                            zIndex: 10,
+                            data: balanceData
+                        }]
+                    });
+                <% end %>
+            <% else %>
+                Highcharts.chart('time-chart', {
+                    chart: {
+                        type: 'column',
+                        style: {
+                            fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+                        },
+                        animation: true
+                    },
+                    title: {
+                        text: '<%= t ".select_organization_for_details" %>',
+                        style: {
+                            fontSize: '18px',
+                            fontWeight: '500'
+                        }
+                    },
+                    subtitle: {
+                        text: '<%= t ".select_organization_subtitle" %>',
+                        style: {
+                            fontStyle: 'italic',
+                            color: '#666'
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        labels: {
+                            style: {
+                                fontSize: '12px'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: '<%= t ".total_transfers" %>',
+                            style: {
+                                fontWeight: '500'
+                            }
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="padding:0"><b>{point.y:.0f} <%= t ".transfers" %></b></td></tr>',
+                        footerFormat: '</table>',
+                        useHTML: true,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderWidth: 0,
+                        shadow: true
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            borderRadius: 3,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y:.0f}',
+                                style: {
+                                    fontWeight: '400',
+                                    fontSize: '11px'
+                                }
+                            },
+                            animation: {
+                                duration: 1000
+                            },
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                offsetX: 1,
+                                offsetY: 1,
+                                width: 2
+                            },
+                            colorByPoint: true,
+                            colors: ['#28a745', '#17a2b8', '#007bff', '#dc3545', '#ffc107', '#6610f2', '#20c997', '#fd7e14']
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: '<%= t ".total_transfers" %>',
+                        data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>
+                    }]
+                });
+            <% end %>
         });
-      <% end %>
-    <% else %>
-      Highcharts.chart('time-chart', {
-        chart: {
-        type: 'column'
-        },
-        title: {
-        text: '<%= t ".select_organization_for_details" %>'
-        },
-        subtitle: {
-        text: '<%= t ".select_organization_subtitle" %>'
-        },
-        xAxis: {
-        type: 'category'
-        },
-        yAxis: {
-        title: {
-          text: '<%= t ".total_transfers" %>'
-        }
-        },
-        legend: {
-        enabled: false
-        },
-        plotOptions: {
-        series: {
-          borderWidth: 0,
-          dataLabels: {
-            enabled: true,
-            format: '{point.y:.1f}'
-          }
-        }
-        },
-        series: [{
-        name: '<%= t ".total_transfers" %>',
-        colorByPoint: true,
-        data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>
-        }]
-      });
-    <% end %>
-    });
-  </script>
+    </script>
 <% end %>
