@@ -7,6 +7,9 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 
+-- Activar la extensión unaccent (desde render_setup.sql)
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 -- Las siguientes extensiones se comentan porque requieren permisos de superusuario
 -- Sin embargo, estas extensiones estan  disponibles en Render
 
@@ -32,19 +35,20 @@ SET client_min_messages = warning;
 
 --
 -- Name: posts_trigger(); Type: FUNCTION; Schema: public; Owner: -
+-- Reemplazar la función trigger (desde render_setup.sql)
 --
 
-CREATE FUNCTION public.posts_trigger() RETURNS trigger
+CREATE OR REPLACE FUNCTION public.posts_trigger() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-      begin
-        new.tsv :=
-          to_tsvector('simple', unaccent(coalesce(new.title::text, ''))) ||
-          to_tsvector('simple', unaccent(coalesce(new.description::text, ''))) ||
-          to_tsvector('simple', unaccent(coalesce(new.tags::text, '')));
-        return new;
-      end
-      $$;
+    BEGIN
+      new.tsv :=
+        to_tsvector('simple', unaccent(coalesce(new.title::text, ''))) ||
+        to_tsvector('simple', unaccent(coalesce(new.description::text, ''))) ||
+        to_tsvector('simple', unaccent(coalesce(new.tags::text, '')));
+      RETURN new;
+    END;
+    $$;
 
 
 SET default_tablespace = '';
@@ -501,6 +505,12 @@ CREATE TABLE public.organizations (
     domain character varying,
     highlighted boolean DEFAULT false
 );
+
+-- Añadir columnas de coordenadas (desde add_coordinates.sql)
+ALTER TABLE public.organizations ADD COLUMN IF NOT EXISTS latitude decimal(10,6);
+ALTER TABLE public.organizations ADD COLUMN IF NOT EXISTS longitude decimal(10,6);
+ALTER TABLE public.organizations ADD COLUMN IF NOT EXISTS geocoded_at timestamp without time zone;
+CREATE INDEX IF NOT EXISTS index_organizations_on_latitude_and_longitude ON public.organizations (latitude, longitude);
 
 
 --
