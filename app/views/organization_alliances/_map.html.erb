@@ -1,3 +1,4 @@
+<!-- app/views/organization_alliances/_map.html.erb -->
 <div class="row">
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <ul class="nav nav-pills actions-menu mb-3">
@@ -50,10 +51,10 @@
                             <span style="display:inline-block; width:50px; height:3px; background-color:green;"></span> <%= t('organization_alliances.map.accepted_alliance') %>
                         </div>
                         <div class="me-4">
-                            <span style="display:inline-block; width:50px; height:3px; background-color:orange; border-style:dashed; border-width:1px 0 0 0;"></span> <%= t('organization_alliances.map.pending_alliance') %>
+                            <span style="display:inline-block; width:50px; height:3px; background-color:orange;"></span> <%= t('organization_alliances.map.pending_alliance') %>
                         </div>
                         <div class="me-4">
-                            <span style="display:inline-block; width:50px; height:3px; background-color:red; border-style:dotted; border-width:1px 0 0 0;"></span> <%= t('organization_alliances.map.rejected_alliance') %>
+                            <span style="display:inline-block; width:50px; height:3px; background-color:red;"></span> <%= t('organization_alliances.map.rejected_alliance') %>
                         </div>
                     </div>
                 </div>
@@ -111,12 +112,38 @@
         const markers = {};
         const bounds = L.latLngBounds();
         
+        // Función para verificar si existe una solicitud pendiente entre dos organizaciones
+        function hasPendingAlliance(orgId) {
+            return alliances.some(alliance => 
+                alliance.status === 'pending' && (
+                    (alliance.source_id === currentOrgId && alliance.target_id === orgId) ||
+                    (alliance.target_id === currentOrgId && alliance.source_id === orgId)
+                )
+            );
+        }
+
+        // Función para verificar si existe una alianza aceptada entre dos organizaciones
+        function hasAcceptedAlliance(orgId) {
+            return alliances.some(alliance => 
+                alliance.status === 'accepted' && (
+                    (alliance.source_id === currentOrgId && alliance.target_id === orgId) ||
+                    (alliance.target_id === currentOrgId && alliance.source_id === orgId)
+                )
+            );
+        }
+
+        // Función para verificar si existe una alianza rechazada entre dos organizaciones
+        function hasRejectedAlliance(orgId) {
+            return alliances.some(alliance => 
+                alliance.status === 'rejected' && (
+                    (alliance.source_id === currentOrgId && alliance.target_id === orgId) ||
+                    (alliance.target_id === currentOrgId && alliance.source_id === orgId)
+                )
+            );
+        }
+        
         orgsWithCoordinates.forEach(function(org) {
-            const isAllied = alliances.some(function(alliance) {
-                if (alliance.status !== 'accepted') return false;
-                return (alliance.source_id === currentOrgId && alliance.target_id === org.id) || 
-                             (alliance.target_id === currentOrgId && alliance.source_id === org.id);
-            });
+            const isAllied = hasAcceptedAlliance(org.id);
             
             let markerColor;
             if (org.id === currentOrgId) {
@@ -136,16 +163,26 @@
                 fillOpacity: 0.8
             }).addTo(map);
             
-            marker.bindPopup(
-                '<strong>' + org.name + '</strong><br>' + 
+            const isPending = hasPendingAlliance(org.id);
+            const isRejected = hasRejectedAlliance(org.id);
+            
+            let popupContent = '<strong>' + org.name + '</strong><br>' + 
                 (org.city ? org.city + '<br>' : '') + 
                 (org.address ? org.address + '<br>' : '') + 
                 '<br><a href="/organizations/' + org.id + '" class="btn btn-sm btn-primary">' + 
-                '<%= t("global.show") %></a>' +
-                (org.id !== currentOrgId && !isAllied ? 
-                    ' <a href="/organizations/' + org.id + '" class="btn btn-sm btn-secondary">' + 
-                    '<%= t("organization_alliances.request_alliance") %></a>' : '')
-            );
+                '<%= t("global.show") %></a>';
+                
+            // Solo mostrar el botón de solicitar alianza si:
+            // 1. No es la organización actual
+            // 2. No existe una alianza pendiente
+            // 3. No existe una alianza aceptada
+            // 4. No existe una alianza rechazada
+            if (org.id !== currentOrgId && !isPending && !isAllied && !isRejected) {
+                popupContent += ' <a href="/organizations/' + org.id + '" class="btn btn-sm btn-secondary">' + 
+                    '<%= t("organization_alliances.request_alliance") %></a>';
+            }
+            
+            marker.bindPopup(popupContent);
             
             markers[org.id] = marker;
             bounds.extend(marker.getLatLng());
@@ -174,16 +211,16 @@
                         lineStyle = {
                             color: 'orange',
                             weight: 2,
-                            opacity: 0.7,
-                            dashArray: '5, 10'
+                            opacity: 0.7
+                            // Se eliminó dashArray para líneas continuas
                         };
                         break;
                     case 'rejected':
                         lineStyle = {
                             color: 'red',
                             weight: 2,
-                            opacity: 0.5,
-                            dashArray: '2, 6'
+                            opacity: 0.5
+                            // Se eliminó dashArray para líneas continuas
                         };
                         break;
                 }
