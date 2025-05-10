@@ -1,15 +1,17 @@
-# Original organizations with location data
-org1 = Organization.find_or_create_by(name: "Banco de Tiempo Local") do |org|
-  org.address = "Carrer de Bailèn, 123"
-  org.neighborhood = "Eixample"
-  org.city = "Barcelona"
-end
+# Original organizations with location data - adding update logic
+org1 = Organization.find_or_create_by(name: "Banco de Tiempo Local")
+org1.update(
+  address: "Carrer de Bailèn, 123",
+  neighborhood: "Eixample",
+  city: "Barcelona"
+)
 
-org2 = Organization.find_or_create_by(name: "El otro Banco de Tiempo :)") do |org|
-  org.address = "Calle Gran Vía, 45"
-  org.neighborhood = "Centro"
-  org.city = "Madrid"
-end
+org2 = Organization.find_or_create_by(name: "El otro Banco de Tiempo :)")
+org2.update(
+  address: "Calle Gran Vía, 45",
+  neighborhood: "Centro",
+  city: "Madrid"
+)
 
 # Original users
 User.find_or_create_by(email: "admin@timeoverflow.org") do |user|
@@ -138,54 +140,62 @@ User.find_by(email: "user2@timeoverflow.org").members.
 end
 
 # New organizations with location data
-org3 = Organization.find_or_create_by(name: "Banco del tiempo 3") do |org|
-  org.address = "Avenida Diagonal, 460"
-  org.neighborhood = "Les Corts"
-  org.city = "Barcelona"
-end
+org3 = Organization.find_or_create_by(name: "Banco del tiempo 3")
+org3.update(
+  address: "Avenida Diagonal, 460",
+  neighborhood: "Les Corts",
+  city: "Barcelona"
+)
 
-org4 = Organization.find_or_create_by(name: "Banco del tiempo 4") do |org|
-  org.address = "Calle Alcalá, 189"
-  org.neighborhood = "Salamanca"
-  org.city = "Madrid"
-end
+org4 = Organization.find_or_create_by(name: "Banco del tiempo 4")
+org4.update(
+  address: "Calle Alcalá, 189",
+  neighborhood: "Salamanca",
+  city: "Madrid"
+)
 
-org5 = Organization.find_or_create_by(name: "Banco del tiempo 5") do |org|
-  org.address = "Carrer de la Marina, 253"
-  org.neighborhood = "Sagrada Familia"
-  org.city = "Barcelona"
-end
+org5 = Organization.find_or_create_by(name: "Banco del tiempo 5")
+org5.update(
+  address: "Carrer de la Marina, 253",
+  neighborhood: "Sagrada Familia",
+  city: "Barcelona"
+)
 
 # Añadir más bancos de tiempo con ubicaciones distribuidas por España
-Organization.find_or_create_by(name: "Banco de Tiempo Valencia") do |org|
-  org.address = "Calle Colón, 34"
-  org.neighborhood = "Ciutat Vella"
-  org.city = "Valencia"
-end
+valencia_org = Organization.find_or_create_by(name: "Banco de Tiempo Valencia")
+valencia_org.update(
+  address: "Calle Colón, 34",
+  neighborhood: "Ciutat Vella",
+  city: "Valencia"
+)
 
-Organization.find_or_create_by(name: "Banco de Tiempo Sevilla") do |org|
-  org.address = "Calle Sierpes, 48"
-  org.neighborhood = "Centro"
-  org.city = "Sevilla"
-end
+sevilla_org = Organization.find_or_create_by(name: "Banco de Tiempo Sevilla")
+sevilla_org.update(
+  address: "Calle Sierpes, 48",
+  neighborhood: "Centro",
+  city: "Sevilla"
+)
 
-Organization.find_or_create_by(name: "Banco de Tiempo Bilbao") do |org|
-  org.address = "Gran Vía Don Diego López de Haro, 12"
-  org.neighborhood = "Abando"
-  org.city = "Bilbao"
-end
+bilbao_org = Organization.find_or_create_by(name: "Banco de Tiempo Bilbao")
+bilbao_org.update(
+  address: "Gran Vía Don Diego López de Haro, 12",
+  neighborhood: "Abando",
+  city: "Bilbao"
+)
 
-Organization.find_or_create_by(name: "Banco de Tiempo Zaragoza") do |org|
-  org.address = "Paseo Independencia, 23"
-  org.neighborhood = "Centro"
-  org.city = "Zaragoza"
-end
+zaragoza_org = Organization.find_or_create_by(name: "Banco de Tiempo Zaragoza")
+zaragoza_org.update(
+  address: "Paseo Independencia, 23",
+  neighborhood: "Centro",
+  city: "Zaragoza"
+)
 
-Organization.find_or_create_by(name: "Banco de Tiempo Málaga") do |org|
-  org.address = "Calle Marqués de Larios, 5"
-  org.neighborhood = "Centro Histórico"
-  org.city = "Málaga"
-end
+malaga_org = Organization.find_or_create_by(name: "Banco de Tiempo Málaga")
+malaga_org.update(
+  address: "Calle Marqués de Larios, 5",
+  neighborhood: "Centro Histórico",
+  city: "Málaga"
+)
 
 # Admin3
 User.find_or_create_by(email: "admin3@timeoverflow.org") do |user|
