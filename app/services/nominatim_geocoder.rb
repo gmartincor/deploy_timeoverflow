@@ -2,17 +2,11 @@ require 'net/http'
 require 'json'
 
 class NominatimGeocoder
-  CACHE_EXPIRY = 30.days
-
   @geocoding_mutex = Mutex.new
   @last_request_time = Time.now - 2.seconds
 
   def self.geocode(address)
     return nil if address.blank?
-
-    cache_key = "geocode_#{address.parameterize}"
-    cached = Rails.cache.read(cache_key)
-    return cached if cached.present?
 
     uri = URI("https://nominatim.openstreetmap.org/search")
     params = {
@@ -34,14 +28,10 @@ class NominatimGeocoder
         result = JSON.parse(response.body).first
 
         if result
-          coordinates = {
+          return {
             latitude: result["lat"].to_f,
             longitude: result["lon"].to_f
           }
-
-          Rails.cache.write(cache_key, coordinates, expires_in: CACHE_EXPIRY)
-
-          return coordinates
         end
       end
 

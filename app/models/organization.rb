@@ -121,14 +121,47 @@ class Organization < ApplicationRecord
   end
 
   def coordinates
-    @coordinates ||= NominatimGeocoder.geocode(full_address)
+    if self.attributes.key?('latitude') && latitude.present? && longitude.present?
+      { latitude: latitude, longitude: longitude }
+    else
+      # Fallback al geocodificador existente
+      NominatimGeocoder.geocode(full_address)
+    end
   end
 
+  # Estos métodos ahora aprovechan las columnas en la DB
   def latitude
-    coordinates&.dig(:latitude)
+    if self.attributes.key?('latitude')
+      self['latitude']
+    else
+      coordinates&.dig(:latitude)
+    end
   end
 
   def longitude
-    coordinates&.dig(:longitude)
+    if self.attributes.key?('longitude')
+      self['longitude']
+    else
+      coordinates&.dig(:longitude)
+    end
+  end
+
+  def geocode_address
+    return if latitude.present? && longitude.present? && geocoded_at.present?
+    return if full_address.blank?
+
+    coords = NominatimGeocoder.geocode(full_address)
+
+    if coords.present?
+      update_columns(
+        latitude: coords[:latitude],
+        longitude: coords[:longitude],
+        geocoded_at: Time.current
+      )
+    end
+  end
+
+  def needs_geocoding?
+    full_address.present? && (latitude.nil? || longitude.nil? || geocoded_at.nil?)
   end
 end

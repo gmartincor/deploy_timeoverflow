@@ -182,6 +182,9 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    geocoder (1.8.5)
+      base64 (>= 0.1.0)
+      csv (>= 3.0.0)
     gli (2.22.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -525,6 +528,7 @@ DEPENDENCIES
   dotenv-rails (~> 3.1.7)
   fabrication (~> 2.20)
   faker (~> 3.5)
+  geocoder
   has_scope (~> 0.7.2)
   http_accept_language (~> 2.1.1)
   image_processing (~> 1.12)
