@@ -1,0 +1,426 @@
+<!-- app/views/organization_alliances/_map.html.erb -->
+<div class="row">
+  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+    <ul class="nav nav-pills actions-menu mb-3">
+      <li class="nav-item">
+        <%= link_to organization_alliances_path(status: 'pending', view: 'map'), class: "nav-link #{'active' if @status == 'pending'}" do %>
+          <%= glyph :time %>
+          <%= t('organization_alliances.status.pending') %>
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to organization_alliances_path(status: 'accepted', view: 'map'), class: "nav-link #{'active' if @status == 'accepted'}" do %>
+          <%= glyph :ok %>
+          <%= t('organization_alliances.status.accepted') %>
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to organization_alliances_path(status: 'rejected', view: 'map'), class: "nav-link #{'active' if @status == 'rejected'}" do %>
+          <%= glyph :remove %>
+          <%= t('organization_alliances.status.rejected') %>
+        <% end %>
+      </li>
+      <li class="nav-item ms-auto">
+        <%= link_to organizations_path, class: "text-primary" do %>
+          <%= glyph :search %>
+          <%= t('organization_alliances.search_organizations') %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-3">
+          <div class="d-flex align-items-center">
+            <div class="me-4">
+              <span class="badge bg-primary">&nbsp;</span> <%= t('organization_alliances.map.current_organization') %>
+            </div>
+            <div class="me-4">
+              <span class="badge bg-success">&nbsp;</span> <%= t('organization_alliances.map.allied_organization') %>
+            </div>
+            <div class="me-4">
+              <span class="badge bg-secondary">&nbsp;</span> <%= t('organization_alliances.map.other_organization') %>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <div class="me-4">
+              <hr style="border: 2px solid green; width: 50px;"> <%= t('organization_alliances.map.accepted_alliance') %>
+            </div>
+            <div class="me-4">
+              <hr style="border: 2px dashed orange; width: 50px;"> <%= t('organization_alliances.map.pending_alliance') %>
+            </div>
+            <div class="me-4">
+              <hr style="border: 2px dotted red; width: 50px;"> <%= t('organization_alliances.map.rejected_alliance') %>
+            </div>
+          </div>
+        </div>
+        
+        <div id="alliance-map" style="height: 500px; width: 100%;">
+          <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Include Leaflet.js CSS and JavaScript -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Try to load previously cached geocoding data
+    var geocodingCache = {};
+    
+    try {
+      var cachedData = localStorage.getItem('timeoverflow_map_data');
+      if (cachedData) {
+        var parsedData = JSON.parse(cachedData);
+        
+        // Check if data is still fresh (less than 30 days old)
+        var thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+        if (Date.now() - parsedData.timestamp < thirtyDaysInMs) {
+          parsedData.organizations.forEach(function(org) {
+            geocodingCache[org.address] = {
+              latitude: org.latitude,
+              longitude: org.longitude
+            };
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Error loading cached geocoding data', e);
+    }
+    
+    // Initialize map
+    var mapElement = document.getElementById('alliance-map');
+    var map = L.map(mapElement).setView([40.416775, -3.703790], 5);
+    
+    // Add OpenStreetMap tile layer with HTTPS and proper attribution
+    var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abc',
+      maxZoom: 19,
+      crossOrigin: true
+    }).addTo(map);
+    
+    // Add a fallback tile layer in case the first one fails
+    var openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="https://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+      maxZoom: 17,
+      crossOrigin: true
+    });
+    
+    // Create a layer control and add it to the map
+    var baseMaps = {
+      "OpenStreetMap": osmLayer,
+      "Topographic": openTopoMap
+    };
+    
+    // Crear capas de superposición para la leyenda
+    var overlayMaps = {
+      "<span style='color: green; font-weight: bold;'>—————</span> Alianza aceptada": L.layerGroup(),
+      "<span style='color: orange; font-weight: bold; border-bottom: 2px dashed orange;'>- - - -</span> Alianza pendiente": L.layerGroup(),
+      "<span style='color: red; font-weight: bold; border-bottom: 2px dotted red;'>.......</span> Alianza rechazada": L.layerGroup()
+    };
+    
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+    
+    // Add geocoding control to the map
+    var geocoder = L.Control.Geocoder.nominatim({
+      geocodingQueryParams: {
+        'accept-language': '<%= I18n.locale %>'
+      }
+    });
+    
+    var searchControl = L.Control.geocoder({
+      geocoder: geocoder,
+      defaultMarkGeocode: false,
+      position: 'topleft',
+      placeholder: '<%= t("organization_alliances.map.search_placeholder") %>',
+      errorMessage: '<%= t("organization_alliances.map.geocoding_error") %>'
+    }).addTo(map);
+    
+    // Handle geocoding results
+    searchControl.on('markgeocode', function(e) {
+      var bbox = e.geocode.bbox;
+      var poly = L.polygon([
+        bbox.getSouthEast(),
+        bbox.getNorthEast(),
+        bbox.getNorthWest(),
+        bbox.getSouthWest()
+      ]).addTo(map);
+      
+      map.fitBounds(poly.getBounds());
+    });
+    
+    // Get organization data and alliances
+    var organizations = <%= raw organization_map_data.to_json %>;
+    var alliances = <%= raw alliance_map_data.to_json %>;
+    var currentOrgId = <%= current_organization.id %>;
+    var selectedStatus = '<%= @status %>';
+    
+    // Clear loading indicator
+    mapElement.innerHTML = '';
+    
+    // Process map data
+    var markers = {};
+    var bounds = L.latLngBounds();
+    var hasValidCoordinates = false;
+    
+    // Add organization markers
+    organizations.forEach(function(org) {
+      if (org.latitude && org.longitude) {
+        hasValidCoordinates = true;
+        
+        // Is this organization allied with the current organization?
+        var isAllied = alliances.some(function(alliance) {
+          if (alliance.status !== 'accepted') return false;
+          return (alliance.source_id === currentOrgId && alliance.target_id === org.id) || 
+                 (alliance.target_id === currentOrgId && alliance.source_id === org.id);
+        });
+        
+        // Choose marker color based on relationship
+        var markerColor;
+        if (org.id === currentOrgId) {
+          markerColor = 'primary'; // Current organization
+        } else if (isAllied) {
+          markerColor = 'success'; // Allied organization
+        } else {
+          markerColor = 'secondary'; // Other organization
+        }
+        
+        // Get the color from Bootstrap variables if available
+        var fillColor = getComputedStyle(document.documentElement).getPropertyValue(`--bs-${markerColor}`) || 
+                       (markerColor === 'primary' ? '#0d6efd' : 
+                        markerColor === 'success' ? '#198754' : '#6c757d');
+        
+        // Create marker
+        var marker = L.circleMarker([org.latitude, org.longitude], {
+          radius: org.id === currentOrgId ? 10 : 8,
+          fillColor: fillColor,
+          color: '#fff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.8
+        }).addTo(map);
+        
+        // Add popup with organization info
+        marker.bindPopup(
+          '<strong>' + org.name + '</strong><br>' + 
+          (org.city ? org.city + '<br>' : '') + 
+          (org.address ? org.address + '<br>' : '') + 
+          '<br><a href="/organizations/' + org.id + '" class="btn btn-sm btn-primary">' + 
+          '<%= t("global.show") %></a>' +
+          (org.id !== currentOrgId && !isAllied ? 
+            ' <a href="/organizations/' + org.id + '" class="btn btn-sm btn-secondary">' + 
+            '<%= t("organization_alliances.request_alliance") %></a>' : '')
+        );
+        
+        markers[org.id] = marker;
+        bounds.extend(marker.getLatLng());
+      }
+    });
+    
+    // Add lines for alliances
+    alliances.forEach(function(alliance) {
+      // Skip if not matching the selected status filter
+      if (selectedStatus !== alliance.status && selectedStatus !== 'all') return;
+      
+      var sourceMarker = markers[alliance.source_id];
+      var targetMarker = markers[alliance.target_id];
+      
+      if (sourceMarker && targetMarker) {
+        var sourceLatLng = sourceMarker.getLatLng();
+        var targetLatLng = targetMarker.getLatLng();
+        
+        // Line style based on status
+        var lineStyle;
+        switch(alliance.status) {
+          case 'accepted':
+            lineStyle = {
+              color: 'green',
+              weight: 3,
+              opacity: 0.7
+            };
+            break;
+          case 'pending':
+            lineStyle = {
+              color: 'orange',
+              weight: 2,
+              opacity: 0.7,
+              dashArray: '5, 10'
+            };
+            break;
+          case 'rejected':
+            lineStyle = {
+              color: 'red',
+              weight: 2,
+              opacity: 0.5,
+              dashArray: '2, 6'
+            };
+            break;
+        }
+        
+        // Draw line between organizations
+        var polyline = L.polyline([sourceLatLng, targetLatLng], lineStyle).addTo(map);
+        
+        // Add tooltip with alliance status
+        polyline.bindTooltip('<%= t("organization_alliances.map.alliance_status") %>: ' + 
+                             '<%= t("organization_alliances.status") %>.' + alliance.status);
+      }
+    });
+    
+    // Show a message if there are no coordinates
+    if (!hasValidCoordinates) {
+      mapElement.innerHTML = 
+        '<div class="alert alert-warning"><%= t("organization_alliances.map.no_coordinates") %></div>';
+    } else if (bounds.isValid()) {
+      // Fit map to bounds with some padding
+      map.fitBounds(bounds.pad(0.1));
+    }
+    
+    // Add organization search function
+    function setupOrganizationSearch() {
+      var searchContainer = document.createElement('div');
+      searchContainer.className = 'card mt-3';
+      searchContainer.innerHTML = `
+        <div class="card-body">
+          <h5 class="card-title"><%= t("organization_alliances.map.find_organization") %></h5>
+          <div class="input-group mb-3">
+            <select class="form-select" id="organization-selector">
+              <option value=""><%= t('organization_alliances.map.select_organization') %></option>
+              ${organizations.map(org => `
+                <option value="${org.id}">${org.name}</option>
+              `).join('')}
+            </select>
+            <button class="btn btn-primary" id="locate-organization-btn">
+              <%= t("organization_alliances.map.locate") %>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.querySelector('.card-body').appendChild(searchContainer);
+      
+      // Handle locating an organization
+      document.getElementById('locate-organization-btn').addEventListener('click', function() {
+        var selectedId = parseInt(document.getElementById('organization-selector').value);
+        if (selectedId && markers[selectedId]) {
+          var marker = markers[selectedId];
+          map.setView(marker.getLatLng(), 13);
+          marker.openPopup();
+        }
+      });
+    }
+    
+    // Add admin geocoding tools
+    <% if current_user.manages?(current_organization) %>
+    function setupAdminGeocodingTools() {
+      var adminContainer = document.createElement('div');
+      adminContainer.className = 'card mt-3';
+      adminContainer.innerHTML = `
+        <div class="card-body">
+          <h5 class="card-title"><%= t("organization_alliances.map.admin_tools") %></h5>
+          <div class="alert alert-info">
+            <%= t("organization_alliances.map.geocoding_info") %>
+          </div>
+          <div class="mb-3">
+            <label for="geocode-address" class="form-label">
+              <%= t("organization_alliances.map.geocode_address") %>
+            </label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="geocode-address" 
+                     placeholder="<%= t('organization_alliances.map.address_placeholder') %>">
+              <button class="btn btn-primary" id="geocode-address-btn">
+                <%= t("organization_alliances.map.geocode") %>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.querySelector('.card-body').appendChild(adminContainer);
+      
+      // Handle geocoding an address
+      document.getElementById('geocode-address-btn').addEventListener('click', function() {
+        var address = document.getElementById('geocode-address').value;
+        if (address) {
+          // Use the Leaflet Control Geocoder to find the address
+          geocoder.geocode(address, function(results) {
+            if (results.length > 0) {
+              var result = results[0];
+              var latlng = result.center;
+              
+              // Create a temporary marker
+              var tempMarker = L.marker(latlng).addTo(map);
+              tempMarker.bindPopup(`
+                <strong>${result.name}</strong><br>
+                ${result.html || ''}<br>
+                <small>Lat: ${latlng.lat.toFixed(6)}, Lng: ${latlng.lng.toFixed(6)}</small>
+              `).openPopup();
+              
+              // Center the map on the result
+              map.setView(latlng, 15);
+            }
+          });
+        }
+      });
+    }
+    
+    setupAdminGeocodingTools();
+    <% end %>
+    
+    // Call this after creating all markers
+    setupOrganizationSearch();
+    
+    // Store geocoding results in localStorage
+    try {
+      localStorage.setItem('timeoverflow_map_data', JSON.stringify({
+        timestamp: Date.now(),
+        organizations: organizations.filter(org => org.latitude && org.longitude)
+      }));
+    } catch (e) {
+      console.warn('Could not store map data in localStorage', e);
+    }
+
+    // Small delay to ensure the container is fully rendered
+    setTimeout(function() {
+      // This tells Leaflet to invalidate its size cache and redraw the map
+      if (map) {
+        map.invalidateSize();
+      }
+    }, 100);
+  });
+</script>
+
+<style>
+  #alliance-map .leaflet-popup-content {
+    min-width: 200px;
+  }
+  
+  .leaflet-control-geocoder {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    background: white;
+    border-radius: 5px;
+  }
+  
+  .leaflet-control-geocoder-form input {
+    padding: 8px;
+    width: 250px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+  }
+</style>

@@ -115,4 +115,20 @@ class Organization < ApplicationRecord
       errors.add(:web, :url_format_invalid)
     end
   end
+
+  def full_address
+    [address, neighborhood, city].compact.join(', ')
+  end
+
+  def coordinates
+    @coordinates ||= NominatimGeocoder.geocode(full_address)
+  end
+
+  def latitude
+    coordinates&.dig(:latitude)
+  end
+
+  def longitude
+    coordinates&.dig(:longitude)
+  end
 end

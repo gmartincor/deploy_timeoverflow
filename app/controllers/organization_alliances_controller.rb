@@ -1,4 +1,7 @@
+# app/controllers/organization_alliances_controller.rb
 class OrganizationAlliancesController < ApplicationController
+  include Maps::OrganizationAlliancesMapHelper
+
   before_action :authenticate_user!
   before_action :member_should_exist_and_be_active
   before_action :authorize_admin
@@ -6,6 +9,10 @@ class OrganizationAlliancesController < ApplicationController
 
   def index
     @status = params[:status] || "pending"
+    @view = params[:view] || "list"
+
+    # Pre-geocode organizations if viewing the map
+    preload_organization_geocoding if @view == 'map'
 
     @alliances = case @status
                  when "pending"
@@ -59,6 +66,9 @@ class OrganizationAlliancesController < ApplicationController
 
     redirect_to organization_alliances_path
   end
+
+  # Helper methods for the map feature
+  helper_method :organization_map_data, :alliance_map_data
 
   private
 

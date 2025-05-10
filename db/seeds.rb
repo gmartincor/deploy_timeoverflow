@@ -1,6 +1,15 @@
-# Original organizations
-Organization.find_or_create_by(name: "Banco de Tiempo Local")
-Organization.find_or_create_by(name: "El otro Banco de Tiempo :)")
+# Original organizations with location data
+org1 = Organization.find_or_create_by(name: "Banco de Tiempo Local") do |org|
+  org.address = "Carrer de Bailèn, 123"
+  org.neighborhood = "Eixample"
+  org.city = "Barcelona"
+end
+
+org2 = Organization.find_or_create_by(name: "El otro Banco de Tiempo :)") do |org|
+  org.address = "Calle Gran Vía, 45"
+  org.neighborhood = "Centro"
+  org.city = "Madrid"
+end
 
 # Original users
 User.find_or_create_by(email: "admin@timeoverflow.org") do |user|
@@ -128,11 +137,55 @@ User.find_by(email: "user2@timeoverflow.org").members.
   member.entry_date = DateTime.now.utc
 end
 
-# New organizations
-Organization.find_or_create_by(name: "Banco del tiempo 3")
-Organization.find_or_create_by(name: "Banco del tiempo 4")
-Organization.find_or_create_by(name: "Banco del tiempo 5")
+# New organizations with location data
+org3 = Organization.find_or_create_by(name: "Banco del tiempo 3") do |org|
+  org.address = "Avenida Diagonal, 460"
+  org.neighborhood = "Les Corts"
+  org.city = "Barcelona"
+end
 
+org4 = Organization.find_or_create_by(name: "Banco del tiempo 4") do |org|
+  org.address = "Calle Alcalá, 189"
+  org.neighborhood = "Salamanca"
+  org.city = "Madrid"
+end
+
+org5 = Organization.find_or_create_by(name: "Banco del tiempo 5") do |org|
+  org.address = "Carrer de la Marina, 253"
+  org.neighborhood = "Sagrada Familia"
+  org.city = "Barcelona"
+end
+
+# Añadir más bancos de tiempo con ubicaciones distribuidas por España
+Organization.find_or_create_by(name: "Banco de Tiempo Valencia") do |org|
+  org.address = "Calle Colón, 34"
+  org.neighborhood = "Ciutat Vella"
+  org.city = "Valencia"
+end
+
+Organization.find_or_create_by(name: "Banco de Tiempo Sevilla") do |org|
+  org.address = "Calle Sierpes, 48"
+  org.neighborhood = "Centro"
+  org.city = "Sevilla"
+end
+
+Organization.find_or_create_by(name: "Banco de Tiempo Bilbao") do |org|
+  org.address = "Gran Vía Don Diego López de Haro, 12"
+  org.neighborhood = "Abando"
+  org.city = "Bilbao"
+end
+
+Organization.find_or_create_by(name: "Banco de Tiempo Zaragoza") do |org|
+  org.address = "Paseo Independencia, 23"
+  org.neighborhood = "Centro"
+  org.city = "Zaragoza"
+end
+
+Organization.find_or_create_by(name: "Banco de Tiempo Málaga") do |org|
+  org.address = "Calle Marqués de Larios, 5"
+  org.neighborhood = "Centro Histórico"
+  org.city = "Málaga"
+end
 
 # Admin3
 User.find_or_create_by(email: "admin3@timeoverflow.org") do |user|
