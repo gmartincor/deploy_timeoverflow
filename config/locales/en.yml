@@ -340,6 +340,28 @@ en:
       text: "%{organization_name} from"
       text_donation: The ADBdT association offers TimeOverflow for free to Time Banks. If you want to help maintain and improve the platform %{href}.
       text_donation_link: visit this website
+  maps:
+    title: "Organizations Map"
+    organizations: "Organizations"
+    view_map: "View on map"
+    search: "Search on map"
+    no_coordinates: "No coordinates available for this organization"
+    location_error: "Error getting location"
+    search_location: "Search location"
+    your_location: "Your location"
+    nearby_organizations: "Nearby organizations"
+    distance: "Distance"
+    km: "km"
+    contact: "Contact"
+    filter:
+      title: "Filter organizations"
+      all: "All"
+      active: "Active"
+      apply: "Apply filters"
+    organization_popup:
+      member_count: "Members: %{count}"
+      visit_profile: "View profile"
+      get_directions: "Get directions"
   multi_transfers:
     multi_transfers: Multi transfers
     step:
@@ -427,6 +449,12 @@ en:
     show:
       contact_information: Contact information
       join_timebank: Don't hesitate to contact the time bank to join it or ask any questions.
+    map:
+      title: "Location"
+      address_not_found: "Could not find address on map"
+      update_coordinates: "Update coordinates"
+      coordinates_updated: "Coordinates updated successfully"
+      view_larger_map: "View larger map"
   pages:
     about:
       app-mobile: Mobile App

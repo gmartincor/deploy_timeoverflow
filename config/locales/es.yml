@@ -341,6 +341,28 @@ es:
       text: "%{organization_name} en"
       text_donation: La asociación ADBdT ofrece TimeOverflow de forma gratuita a los Bancos de Tiempo. Si quieres contribuir a mantener y mejorar la plataforma, %{href}.
       text_donation_link: visita esta web
+  maps:
+    title: "Mapa de organizaciones"
+    organizations: "Organizaciones"
+    view_map: "Ver en el mapa"
+    search: "Buscar en el mapa"
+    no_coordinates: "No hay coordenadas disponibles para esta organización"
+    location_error: "Error al obtener la ubicación"
+    search_location: "Buscar ubicación"
+    your_location: "Tu ubicación"
+    nearby_organizations: "Organizaciones cercanas"
+    distance: "Distancia"
+    km: "km"
+    contact: "Contactar"
+    filter:
+      title: "Filtrar organizaciones"
+      all: "Todas"
+      active: "Activas"
+      apply: "Aplicar filtros"
+    organization_popup:
+      member_count: "Miembros: %{count}"
+      visit_profile: "Ver perfil"
+      get_directions: "Cómo llegar"
   multi_transfers:
     multi_transfers: Transferencias múltiples
     step:
@@ -388,7 +410,7 @@ es:
     actions: "Acciones"
     sent: "Enviadas"
     received: "Recibidas"
-    pending: "Pending"
+    pending: "Pendiente"
     active: "Activa"
     rejected: "Rechazada"
     request_alliance: "Solicitar alianza"
@@ -403,6 +425,21 @@ es:
       pending: "Solicitudes Pendientes"
       accepted: "Alianzas Activas"
       rejected: "Solicitudes Rechazadas"
+    map:
+      current_organization: "Organización Actual"
+      allied_organization: "Organización Aliada"
+      other_organization: "Otra Organización"
+      accepted_alliance: "Alianza Aceptada"
+      pending_alliance: "Alianza Pendiente"
+      rejected_alliance: "Alianza Rechazada"
+      no_coordinates: "No hay organizaciones con coordenadas para mostrar en el mapa"
+      find_organization: "Encontrar organización"
+      select_organization: "Seleccionar organización"
+      locate: "Localizar"
+      alliance_status: "Estado de la alianza"
+    view:
+      list: "Lista"
+      map: "Mapa"
   organization_notifier:
     member_deleted:
       body: El usuario %{username} se ha dado de baja de la organización.
@@ -428,6 +465,12 @@ es:
     show:
       contact_information: Información de contacto
       join_timebank: No dudes en contactar con el Banco de Tiempo para unirte o para resolver dudas.
+    map:
+      title: "Ubicación"
+      address_not_found: "No se pudo encontrar la dirección en el mapa"
+      update_coordinates: "Actualizar coordenadas"
+      coordinates_updated: "Coordenadas actualizadas correctamente"
+      view_larger_map: "Ver mapa más grande"
   pages:
     about:
       app-mobile: App Móvil
