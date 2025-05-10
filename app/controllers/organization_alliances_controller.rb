@@ -1,4 +1,3 @@
-# app/controllers/organization_alliances_controller.rb
 class OrganizationAlliancesController < ApplicationController
   include Maps::OrganizationAlliancesMapHelper
 
@@ -11,7 +10,6 @@ class OrganizationAlliancesController < ApplicationController
     @status = params[:status] || "pending"
     @view = params[:view] || "list"
 
-    # Pre-geocode organizations if viewing the map
     preload_organization_geocoding if @view == 'map'
 
     @alliances = case @status
@@ -67,7 +65,6 @@ class OrganizationAlliancesController < ApplicationController
     redirect_to organization_alliances_path
   end
 
-  # Helper methods for the map feature
   helper_method :organization_map_data, :alliance_map_data
 
   private
