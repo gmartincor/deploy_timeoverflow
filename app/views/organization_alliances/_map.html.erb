@@ -156,6 +156,8 @@
         
         orgsWithCoordinates.forEach(function(org) {
             const isAllied = hasAcceptedAlliance(org.id);
+            const isPending = hasPendingAlliance(org.id);
+            const isRejected = hasRejectedAlliance(org.id);
             
             let iconColor;
             let iconSize;
@@ -177,9 +179,6 @@
                 icon: customIcon
             }).addTo(map);
             
-            const isPending = hasPendingAlliance(org.id);
-            const isRejected = hasRejectedAlliance(org.id);
-            
             let popupContent = '<strong>' + org.name + '</strong><br>' + 
                 (org.city ? org.city + '<br>' : '') + 
                 (org.address ? org.address + '<br>' : '') + 
@@ -192,8 +191,18 @@
             // 3. No existe una alianza aceptada
             // 4. No existe una alianza rechazada
             if (org.id !== currentOrgId && !isPending && !isAllied && !isRejected) {
-                popupContent += ' <a href="/organizations/' + org.id + '" class="btn btn-sm btn-secondary">' + 
-                    '<%= t("organization_alliances.request_alliance") %></a>';
+                // Crear un formulario con método POST para solicitar la alianza (similar al partial alliance_button)
+                popupContent += ' <form action="/organization_alliances" method="post" style="display:inline;">' +
+                    '<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">' +
+                    '<input type="hidden" name="organization_alliance[target_organization_id]" value="' + org.id + '">' +
+                    '<button type="submit" class="btn btn-sm btn-secondary">' +
+                    '<%= t("organization_alliances.request_alliance") %></button></form>';
+            } else if (isPending) {
+                popupContent += ' <span class="badge rounded-pill bg-secondary"><%= t("organization_alliances.pending") %></span>';
+            } else if (isAllied) {
+                popupContent += ' <span class="badge rounded-pill bg-primary"><%= t("organization_alliances.active") %></span>';
+            } else if (isRejected) {
+                popupContent += ' <span class="badge rounded-pill bg-danger"><%= t("organization_alliances.rejected") %></span>';
             }
             
             marker.bindPopup(popupContent);
