@@ -34,6 +34,7 @@ class Organization < ApplicationRecord
 
   before_validation :ensure_url
   after_create :create_account
+  after_save :update_coordinates_if_address_changed
 
   def to_s
     "#{name}"
@@ -54,11 +55,6 @@ class Organization < ApplicationRecord
     self
   end
 
-  # Returns the id to be displayed in the :new transfer page with the given
-  # destination_accountable
-  #
-  # @params destination_accountable [Organization | Object] target of a transfer
-  # @return [Integer | String]
   def display_id
     account.accountable_id
   end
@@ -124,12 +120,10 @@ class Organization < ApplicationRecord
     if self.attributes.key?('latitude') && latitude.present? && longitude.present?
       { latitude: latitude, longitude: longitude }
     else
-      # Fallback al geocodificador existente
       NominatimGeocoder.geocode(full_address)
     end
   end
 
-  # Estos métodos ahora aprovechan las columnas en la DB
   def latitude
     if self.attributes.key?('latitude')
       self['latitude']
@@ -147,7 +141,6 @@ class Organization < ApplicationRecord
   end
 
   def geocode_address
-    return if latitude.present? && longitude.present? && geocoded_at.present?
     return if full_address.blank?
 
     coords = NominatimGeocoder.geocode(full_address)
@@ -158,10 +151,29 @@ class Organization < ApplicationRecord
         longitude: coords[:longitude],
         geocoded_at: Time.current
       )
+      return true
     end
+
+    false
   end
 
   def needs_geocoding?
     full_address.present? && (latitude.nil? || longitude.nil? || geocoded_at.nil?)
+  end
+
+  private
+
+  def update_coordinates_if_address_changed
+    if saved_change_to_address? || saved_change_to_neighborhood? || saved_change_to_city?
+      Thread.new do
+        begin
+          geocode_address
+        rescue StandardError => e
+          Rails.logger.error("Error geocodificando dirección: #{e.message}")
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
+        end
+      end
+    end
   end
 end
