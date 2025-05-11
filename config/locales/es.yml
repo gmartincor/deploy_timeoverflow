@@ -440,6 +440,10 @@ es:
     view:
       list: "Lista"
       map: "Mapa"
+    errors:
+      pending_alliance_exists: "Ya existe una alianza pendiente con esta organización"
+      active_alliance_exists: "Ya existe una alianza activa con esta organización"
+      alliance_exists: "Ya existe una relación con esta organización"
   organization_notifier:
     member_deleted:
       body: El usuario %{username} se ha dado de baja de la organización.

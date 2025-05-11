@@ -6,7 +6,21 @@ class OrganizationAlliance < ApplicationRecord
 
   validates :source_organization_id, presence: true
   validates :target_organization_id, presence: true
-  validates :target_organization_id, uniqueness: { scope: :source_organization_id }
+  validates :target_organization_id, uniqueness: {
+    scope: :source_organization_id,
+    message: proc { |obj, _|
+      # Verificar si existe una alianza en cualquier dirección
+      if OrganizationAlliance.exists?(source_organization_id: obj.source_organization_id, target_organization_id: obj.target_organization_id, status: 'pending') ||
+         OrganizationAlliance.exists?(source_organization_id: obj.target_organization_id, target_organization_id: obj.source_organization_id, status: 'pending')
+        I18n.t('organization_alliances.errors.pending_alliance_exists')
+      elsif OrganizationAlliance.exists?(source_organization_id: obj.source_organization_id, target_organization_id: obj.target_organization_id, status: 'accepted') ||
+            OrganizationAlliance.exists?(source_organization_id: obj.target_organization_id, target_organization_id: obj.source_organization_id, status: 'accepted')
+        I18n.t('organization_alliances.errors.active_alliance_exists')
+      else
+        I18n.t('organization_alliances.errors.alliance_exists')
+      end
+    }
+  }
   validate :cannot_ally_with_self
 
   scope :pending, -> { where(status: "pending") }

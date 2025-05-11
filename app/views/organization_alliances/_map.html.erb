@@ -1,4 +1,3 @@
-<!-- app/views/organization_alliances/_map.html.erb -->
 <div class="row">
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <ul class="nav nav-pills actions-menu mb-3">
@@ -197,13 +196,7 @@
                     '<input type="hidden" name="organization_alliance[target_organization_id]" value="' + org.id + '">' +
                     '<button type="submit" class="btn btn-sm btn-secondary">' +
                     '<%= t("organization_alliances.request_alliance") %></button></form>';
-            } else if (isPending) {
-                popupContent += ' <span class="badge rounded-pill bg-secondary"><%= t("organization_alliances.pending") %></span>';
-            } else if (isAllied) {
-                popupContent += ' <span class="badge rounded-pill bg-primary"><%= t("organization_alliances.active") %></span>';
-            } else if (isRejected) {
-                popupContent += ' <span class="badge rounded-pill bg-danger"><%= t("organization_alliances.rejected") %></span>';
-            }
+            } 
             
             marker.bindPopup(popupContent);
             
@@ -319,5 +312,19 @@
     .leaflet-overlay-pane path {
         stroke-linecap: round;
         stroke-linejoin: round;
+    }
+     /* Eliminar bordes de botones y formularios en popups */
+    .leaflet-popup-content button.btn-secondary {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .leaflet-popup-content form {
+        display: inline-block;
+        border: none !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 </style>

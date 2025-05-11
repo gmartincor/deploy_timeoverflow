@@ -424,6 +424,10 @@ en:
       pending: "Pending Requests"
       accepted: "Active Alliances"
       rejected: "Rejected Requests"
+    errors:
+      pending_alliance_exists: "A pending alliance already exists with this organization"
+      active_alliance_exists: "An active alliance already exists with this organization"
+      alliance_exists: "A relationship already exists with this organization"
   organization_notifier:
     member_deleted:
       body: User %{username} has unsubscribed from the organization.
