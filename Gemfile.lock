@@ -539,7 +539,7 @@ DEPENDENCIES
   letter_opener (~> 1.7.0)
   localeapp (~> 3.3)
   mailgun-ruby (~> 1.2)
-  mailgun_rails
+  mailgun_rails (~> 0.9.0)
   pg (~> 1.4)
   pg_search (~> 2.3.5)
   prawn (~> 2.5.0)
