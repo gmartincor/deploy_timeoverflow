@@ -162,13 +162,13 @@
             let iconSize;
             
             if (org.id === currentOrgId) {
-                iconColor = '#0d6efd'; // Azul para organización actual
+                iconColor = '#0d6efd'; 
                 iconSize = 30;
             } else if (isAllied) {
-                iconColor = '#198754'; // Verde para organizaciones aliadas
+                iconColor = '#198754'; 
                 iconSize = 28;
             } else {
-                iconColor = '#6c757d'; // Gris para otras organizaciones
+                iconColor = '#6c757d'; 
                 iconSize = 26;
             }
             
@@ -184,13 +184,7 @@
                 '<br><a href="/organizations/' + org.id + '" class="btn btn-sm btn-primary">' + 
                 '<%= t("global.show") %></a>';
                 
-            // Solo mostrar el botón de solicitar alianza si:
-            // 1. No es la organización actual
-            // 2. No existe una alianza pendiente
-            // 3. No existe una alianza aceptada
-            // 4. No existe una alianza rechazada
             if (org.id !== currentOrgId && !isPending && !isAllied && !isRejected) {
-                // Crear un formulario con método POST para solicitar la alianza (similar al partial alliance_button)
                 popupContent += ' <form action="/organization_alliances" method="post" style="display:inline;">' +
                     '<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">' +
                     '<input type="hidden" name="organization_alliance[target_organization_id]" value="' + org.id + '">' +
@@ -285,46 +279,3 @@
         }, 100);
     });
 </script>
-
-<style>
-    #alliance-map .leaflet-popup-content {
-        min-width: 200px;
-    }
-    
-    .leaflet-control-geocoder {
-        box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-        background: white;
-        border-radius: 5px;
-    }
-    
-    .custom-map-icon {
-        background: none;
-        border: none;
-    }
-    
-    .map-icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-    }
-    
-    .leaflet-overlay-pane path {
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-     /* Eliminar bordes de botones y formularios en popups */
-    .leaflet-popup-content button.btn-secondary {
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-    .leaflet-popup-content form {
-        display: inline-block;
-        border: none !important;
-        background: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-</style>

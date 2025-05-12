@@ -1,0 +1,46 @@
+#alliance-map {
+  .leaflet-popup-content {
+    min-width: 200px;
+  }
+}
+
+.leaflet-control-geocoder {
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  background: white;
+  border-radius: 5px;
+}
+
+.custom-map-icon {
+  background: none;
+  border: none;
+}
+
+.map-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.leaflet-overlay-pane {
+  path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.leaflet-popup-content {
+  button.btn-secondary {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  
+  form {
+    display: inline-block;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
