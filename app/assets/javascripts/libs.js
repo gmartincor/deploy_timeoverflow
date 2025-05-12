@@ -5,4 +5,7 @@
 //= require bootstrap
 //= require vendor/highcharts
 //= require vendor/highcharts-exporting
+//= require vendor/highcharts-export-data
+//= require vendor/highcharts-offline-exporting
+//= require custom/highcharts-config
 //= require select2

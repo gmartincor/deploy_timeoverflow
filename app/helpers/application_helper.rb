@@ -117,4 +117,15 @@ module ApplicationHelper
   def show_no_membership_warning?
     current_user&.no_membership_warning? && !devise_controller?
   end
+
+  # Helper para cargar los scripts de Highcharts adecuados
+  def highcharts_include_tags(with_export = false)
+    if with_export
+      # Cargar todo lo necesario para visualización + exportación a PDF
+      javascript_include_tag 'highcharts-pdf-export'
+    else
+      # Cargar solo lo necesario para visualización básica
+      javascript_include_tag 'vendor/highcharts'
+    end
+  end
 end

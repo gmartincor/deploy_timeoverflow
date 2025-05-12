@@ -100,83 +100,36 @@
                 end
             }.to_json %>;
             
-            Highcharts.chart('balance-chart', {
+            $('#balance-chart').highcharts({
                 chart: {
-                    type: 'column',
-                    animation: true,
-                    style: {
-                        fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-                    }
+                    type: 'column'
                 },
                 title: {
-                    text: '<%= t ".balance_with_allied_organizations" %>',
-                    style: {
-                        fontSize: '18px',
-                        fontWeight: '500'
-                    }
+                    text: '<%= t ".balance_with_allied_organizations" %>'
                 },
                 xAxis: {
                     categories: <%= raw @balance_by_org.map { |_, data| data[:name] }.to_json %>,
-                    crosshair: true,
-                    labels: {
-                        style: {
-                            fontSize: '12px'
-                        }
-                    }
+                    crosshair: true
                 },
                 yAxis: {
                     title: {
-                        text: '<%= t ".hours" %>',
-                        style: {
-                            fontWeight: '500'
-                        }
-                    },
-                    plotLines: [{
-                        value: 0,
-                        color: '#999',
-                        width: 1,
-                        zIndex: 5,
-                        dashStyle: 'shortdash',
-                        label: {
-                            text: '0',
-                            align: 'right',
-                            style: {
-                                color: '#666',
-                                fontSize: '10px'
-                            }
-                        }
-                    }]
+                        text: '<%= t ".hours" %>'
+                    }
                 },
                 tooltip: {
-                    headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{point.color};padding:0;font-weight:bold">{series.name}: </td>' +
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                         '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
-                    useHTML: true,
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderWidth: 0,
-                    shadow: true
+                    useHTML: true
                 },
                 plotOptions: {
                     column: {
                         pointPadding: 0.2,
                         borderWidth: 0,
-                        colorByPoint: true,
-                        borderRadius: 3,
-                        animation: {
-                            duration: 1000
-                        },
-                        shadow: {
-                            color: 'rgba(0, 0, 0, 0.1)',
-                            offsetX: 1,
-                            offsetY: 1,
-                            width: 2
-                        }
+                        colorByPoint: true
                     }
-                },
-                credits: {
-                    enabled: false
                 },
                 series: [{
                     name: '<%= t ".balance" %>',
@@ -192,223 +145,91 @@
                     var incomingData = <%= raw org_data[:months].values.map { |v| v[:incoming] }.to_json %>;
                     var balanceData = <%= raw org_data[:months].values.map { |v| v[:balance] }.to_json %>;
                     
-                    var outgoingColor = '#dc3545';
-                    var incomingColor = '#28a745';
-                    
-                    Highcharts.chart('time-chart', {
+                    $('#time-chart').highcharts({
                         chart: {
-                            zoomType: 'xy',
-                            animation: true,
-                            style: {
-                                fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-                            }
+                            type: 'column'
                         },
                         title: {
-                            text: '<%= t ".time_evolution_with", org: @target_organization.name %>',
-                            style: {
-                                fontSize: '18px',
-                                fontWeight: '500'
-                            }
+                            text: '<%= t ".time_evolution_with", org: @target_organization.name %>'
                         },
-                        xAxis: [{
+                        xAxis: {
                             categories: months,
-                            crosshair: true,
-                            labels: {
-                                style: {
-                                    fontSize: '11px'
-                                }
-                            }
-                        }],
-                        yAxis: [{
-                            title: {
-                                text: '<%= t ".hours" %>',
-                                style: {
-                                    fontWeight: '500',
-                                    fontSize: '13px'
-                                }
-                            },
-                            labels: {
-                                format: '{value}',
-                                style: {
-                                    fontSize: '11px'
-                                }
-                            },
-                            plotLines: [{
-                                value: 0,
-                                color: '#999',
-                                width: 1,
-                                zIndex: 5,
-                                dashStyle: 'shortdash',
-                                label: {
-                                    text: '0',
-                                    align: 'right',
-                                    style: {
-                                        color: '#666',
-                                        fontSize: '10px'
-                                    }
-                                }
-                            }]
-                        }],
-                        tooltip: {
-                            shared: true,
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            borderWidth: 0,
-                            shadow: true,
-                            useHTML: true,
-                            headerFormat: '<table><tr><th colspan="2">{point.key}</th></tr>',
-                            pointFormat: '<tr><td style="color: {series.color}; padding: 0">{series.name}: </td>' +
-                                '<td style="padding: 0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
-                            footerFormat: '</table>'
+                            crosshair: true
                         },
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom',
-                            itemStyle: {
-                                fontWeight: '400'
+                        yAxis: {
+                            title: {
+                                text: '<%= t ".hours" %>'
                             }
+                        },
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
                         },
                         plotOptions: {
                             column: {
-                                borderRadius: 3,
-                                animation: {
-                                    duration: 1000
-                                },
-                                shadow: {
-                                    color: 'rgba(0, 0, 0, 0.1)',
-                                    offsetX: 1,
-                                    offsetY: 1,
-                                    width: 2
-                                }
-                            },
-                            spline: {
-                                lineWidth: 2,
-                                states: {
-                                    hover: {
-                                        lineWidth: 3
-                                    }
-                                },
-                                marker: {
-                                    enabled: true,
-                                    radius: 3,
-                                    symbol: 'circle'
-                                },
-                                animation: {
-                                    duration: 1500
-                                }
+                                pointPadding: 0.2,
+                                borderWidth: 0
                             }
-                        },
-                        credits: {
-                            enabled: false
                         },
                         series: [{
                             name: '<%= t ".outgoing" %>',
-                            type: 'column',
-                            color: outgoingColor,
+                            color: '#dc3545',
                             data: outgoingData
                         }, {
                             name: '<%= t ".incoming" %>',
-                            type: 'column',
-                            color: incomingColor,
+                            color: '#28a745',
                             data: incomingData
                         }, {
                             name: '<%= t ".balance" %>',
-                            type: 'spline',
                             color: '#0052cc',
-                            lineWidth: 2,
-                            marker: {
-                                lineWidth: 2,
-                                lineColor: '#0052cc',
-                                fillColor: 'white',
-                                symbol: 'circle',
-                                radius: 4
-                            },
-                            zIndex: 10,
                             data: balanceData
                         }]
                     });
                 <% end %>
             <% else %>
-                Highcharts.chart('time-chart', {
+                $('#time-chart').highcharts({
                     chart: {
-                        type: 'column',
-                        style: {
-                            fontFamily: "'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-                        },
-                        animation: true
+                        type: 'column'
                     },
                     title: {
-                        text: '<%= t ".select_organization_for_details" %>',
-                        style: {
-                            fontSize: '18px',
-                            fontWeight: '500'
-                        }
+                        text: '<%= t ".select_organization_for_details" %>'
                     },
                     subtitle: {
-                        text: '<%= t ".select_organization_subtitle" %>',
-                        style: {
-                            fontStyle: 'italic',
-                            color: '#666'
-                        }
+                        text: '<%= t ".select_organization_subtitle" %>'
                     },
                     xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                fontSize: '12px'
-                            }
-                        }
+                        type: 'category'
                     },
                     yAxis: {
                         title: {
-                            text: '<%= t ".total_transfers" %>',
-                            style: {
-                                fontWeight: '500'
-                            }
+                            text: '<%= t ".total_transfers" %>'
                         }
                     },
                     legend: {
                         enabled: false
                     },
                     tooltip: {
-                        headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                         pointFormat: '<tr><td style="padding:0"><b>{point.y:.0f} <%= t ".transfers" %></b></td></tr>',
                         footerFormat: '</table>',
-                        useHTML: true,
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                        borderWidth: 0,
-                        shadow: true
+                        useHTML: true
                     },
                     plotOptions: {
                         series: {
                             borderWidth: 0,
-                            borderRadius: 3,
                             dataLabels: {
                                 enabled: true,
-                                format: '{point.y:.0f}',
-                                style: {
-                                    fontWeight: '400',
-                                    fontSize: '11px'
-                                }
-                            },
-                            animation: {
-                                duration: 1000
-                            },
-                            shadow: {
-                                color: 'rgba(0, 0, 0, 0.1)',
-                                offsetX: 1,
-                                offsetY: 1,
-                                width: 2
-                            },
-                            colorByPoint: true,
-                            colors: ['#28a745', '#17a2b8', '#007bff', '#dc3545', '#ffc107', '#6610f2', '#20c997', '#fd7e14']
+                                format: '{point.y:.0f}'
+                            }
                         }
-                    },
-                    credits: {
-                        enabled: false
                     },
                     series: [{
                         name: '<%= t ".total_transfers" %>',
+                        colorByPoint: true,
                         data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>
                     }]
                 });
