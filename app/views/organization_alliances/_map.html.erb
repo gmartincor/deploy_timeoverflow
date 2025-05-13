@@ -1,31 +1,33 @@
 <div class="row">
-    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-        <ul class="nav nav-pills actions-menu mb-3">
-            <li class="nav-item">
-                <%= link_to organization_alliances_path(status: 'pending', view: 'map'), class: "nav-link #{'active' if @status == 'pending'}" do %>
-                    <%= glyph :time %>
-                    <%= t('organization_alliances.status.pending') %>
-                <% end %>
-            </li>
-            <li class="nav-item">
-                <%= link_to organization_alliances_path(status: 'accepted', view: 'map'), class: "nav-link #{'active' if @status == 'accepted'}" do %>
-                    <%= glyph :ok %>
-                    <%= t('organization_alliances.status.accepted') %>
-                <% end %>
-            </li>
-            <li class="nav-item">
-                <%= link_to organization_alliances_path(status: 'rejected', view: 'map'), class: "nav-link #{'active' if @status == 'rejected'}" do %>
-                    <%= glyph :remove %>
-                    <%= t('organization_alliances.status.rejected') %>
-                <% end %>
-            </li>
-            <li class="nav-item ms-auto">
-                <%= link_to organizations_path, class: "text-primary" do %>
-                    <%= glyph :search %>
-                    <%= t('organization_alliances.search_organizations') %>
-                <% end %>
-            </li>
-        </ul>
+    <div class="col-12">
+        <nav aria-label="<%= t('organization_alliances.navigation_label') %>">
+            <ul class="nav nav-pills actions-menu mb-3">
+                <li class="nav-item">
+                    <%= link_to organization_alliances_path(status: 'pending', view: 'map'), class: "nav-link #{'active' if @status == 'pending'}", aria: { current: @status == 'pending' ? 'page' : nil } do %>
+                        <%= glyph :time %>
+                        <%= t('organization_alliances.status.pending') %>
+                    <% end %>
+                </li>
+                <li class="nav-item">
+                    <%= link_to organization_alliances_path(status: 'accepted', view: 'map'), class: "nav-link #{'active' if @status == 'accepted'}", aria: { current: @status == 'accepted' ? 'page' : nil } do %>
+                        <%= glyph :ok %>
+                        <%= t('organization_alliances.status.accepted') %>
+                    <% end %>
+                </li>
+                <li class="nav-item">
+                    <%= link_to organization_alliances_path(status: 'rejected', view: 'map'), class: "nav-link #{'active' if @status == 'rejected'}", aria: { current: @status == 'rejected' ? 'page' : nil } do %>
+                        <%= glyph :remove %>
+                        <%= t('organization_alliances.status.rejected') %>
+                    <% end %>
+                </li>
+                <li class="nav-item ms-auto">
+                    <%= link_to organizations_path, class: "text-primary", aria: { label: t('organization_alliances.search_organizations_aria') } do %>
+                        <%= glyph :search %>
+                        <%= t('organization_alliances.search_organizations') %>
+                    <% end %>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
@@ -34,50 +36,67 @@
         <div class="card">
             <div class="card-body">
                 <div class="mb-3">
-                    <div class="d-flex align-items-center">
-                        <div class="me-4">
-                            <span class="glyphicon glyphicon-home" style="color: #0d6efd; font-size: 18px;"></span> <%= t('organization_alliances.map.current_organization') %>
+                    <fieldset>
+                        <legend class="visually-hidden"><%= t('organization_alliances.map.legend') %></legend>
+                        <div class="row mb-2 gx-2 legend-icons">
+                            <div class="col-12 col-sm-4 col-md-4 mb-2 mb-sm-0 d-flex align-items-center">
+                                <span class="glyphicon glyphicon-home" style="color: #0d6efd; font-size: 18px; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.current_organization') %></span>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 mb-2 mb-sm-0 d-flex align-items-center">
+                                <span class="glyphicon glyphicon-home" style="color: #198754; font-size: 18px; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.allied_organization') %></span>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 d-flex align-items-center">
+                                <span class="glyphicon glyphicon-home" style="color: #6c757d; font-size: 18px; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.other_organization') %></span>
+                            </div>
                         </div>
-                        <div class="me-4">
-                            <span class="glyphicon glyphicon-home" style="color: #198754; font-size: 18px;"></span> <%= t('organization_alliances.map.allied_organization') %>
+                        
+                        <div class="row gx-2 legend-lines">
+                            <div class="col-12 col-sm-4 col-md-4 mb-2 mb-sm-0 d-flex align-items-center">
+                                <span style="display:inline-block; width:40px; height:3px; background-color:green; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.accepted_alliance') %></span>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 mb-2 mb-sm-0 d-flex align-items-center">
+                                <span style="display:inline-block; width:40px; height:3px; background-color:orange; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.pending_alliance') %></span>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 d-flex align-items-center">
+                                <span style="display:inline-block; width:40px; height:3px; background-color:red; margin-right: 8px;" aria-hidden="true"></span> 
+                                <span class="legend-text"><%= t('organization_alliances.map.rejected_alliance') %></span>
+                            </div>
                         </div>
-                        <div class="me-4">
-                            <span class="glyphicon glyphicon-home" style="color: #6c757d; font-size: 18px;"></span> <%= t('organization_alliances.map.other_organization') %>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mt-2">
-                        <div class="me-4">
-                            <span style="display:inline-block; width:50px; height:3px; background-color:green;"></span> <%= t('organization_alliances.map.accepted_alliance') %>
-                        </div>
-                        <div class="me-4">
-                            <span style="display:inline-block; width:50px; height:3px; background-color:orange;"></span> <%= t('organization_alliances.map.pending_alliance') %>
-                        </div>
-                        <div class="me-4">
-                            <span style="display:inline-block; width:50px; height:3px; background-color:red;"></span> <%= t('organization_alliances.map.rejected_alliance') %>
-                        </div>
-                    </div>
+                    </fieldset>
                 </div>
                 
-                <div id="alliance-map" style="height: 500px; width: 100%; border: 1px solid #ccc;">
+                <div id="alliance-map" style="height: 500px; width: 100%; border: 1px solid #ccc;" tabindex="0" role="application" aria-label="<%= t('organization_alliances.map.map_description') %>">
                     <div class="d-flex justify-content-center align-items-center h-100">
                         <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden"><%= t('global.loading') %></span>
                         </div>
                     </div>
                 </div>
                 <div class="card radius-filter-card mt-3">
                     <div class="card-body">
-                        <h5 class="card-title"><%= t('maps.filter.title_km') %></h5>
+                        <h5 class="card-title" id="distance-filter-title"><%= t('maps.filter.title_km') %></h5>
                         <div class="row align-items-center">
-                            <div class="col-md-10">
-                                <div class="d-flex">
-                                    <span class="me-2">1</span>
-                                    <input type="range" class="form-range flex-grow-1" id="distance-slider" min="1" max="500" value="500">
-                                    <span class="ms-2"><span id="slider-value">Sin límite</span></span>
+                            <div class="col-md-10 col-sm-8 col-8">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2" id="min-distance" aria-hidden="true">1</span>
+                                    <label for="distance-slider" class="visually-hidden"><%= t('maps.filter.slider_label') %></label>
+                                    <input type="range" class="form-range flex-grow-1" id="distance-slider" 
+                                        min="1" max="500" value="500" 
+                                        aria-describedby="distance-filter-title slider-instructions"
+                                        aria-valuemin="1" aria-valuemax="500" aria-valuenow="500"
+                                        aria-valuetext="Sin límite">
+                                    <span class="ms-2"><span id="slider-value" aria-live="polite">Sin límite</span></span>
                                 </div>
+                                <div id="slider-instructions" class="visually-hidden"><%= t('maps.filter.slider_instructions') %></div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-secondary" id="reset-radius">
+                            <div class="col-md-2 col-sm-4 col-4">
+                                <button class="btn btn-secondary" id="reset-radius" 
+                                    aria-label="<%= t('maps.filter.reset_aria') %>">
                                     <%= t('maps.filter.reset') %>
                                 </button>
                             </div>
@@ -120,7 +139,7 @@
         
         if (orgsWithCoordinates.length === 0) {
             mapElement.innerHTML = 
-                '<div class="alert alert-warning"><%= t("organization_alliances.map.no_coordinates") %></div>';
+                '<div class="alert alert-warning" role="alert"><%= t("organization_alliances.map.no_coordinates") %></div>';
             return;
         }
         
@@ -170,7 +189,7 @@
         }
         
         function createCustomIcon(color, size) {
-            const iconHtml = `<div class="map-icon" style="font-size: ${size}px; color: ${color};"><span class="glyphicon glyphicon-home"></span></div>`;
+            const iconHtml = `<div class="map-icon" style="font-size: ${size}px; color: ${color};" aria-hidden="true"><span class="glyphicon glyphicon-home"></span></div>`;
             
             return L.divIcon({
                 html: iconHtml,
@@ -227,10 +246,13 @@
                 const customIcon = createCustomIcon(iconColor, iconSize);
                 
                 const marker = L.marker([parseFloat(org.latitude), parseFloat(org.longitude)], {
-                    icon: customIcon
+                    icon: customIcon,
+                    alt: org.name,
+                    title: org.name 
                 }).addTo(map);
                 
-                let popupContent = '<strong>' + org.name + '</strong><br>' + 
+                let popupContent = '<div role="dialog" aria-label="' + org.name + ' ' + '<%= t("maps.filter.org_info") %>">' +
+                    '<strong>' + org.name + '</strong><br>' + 
                     (org.city ? org.city + '<br>' : '') + 
                     (org.address ? org.address + '<br>' : '');
                 
@@ -248,6 +270,8 @@
                         '<button type="submit" class="btn btn-sm btn-secondary">' +
                         '<%= t("organization_alliances.request_alliance") %></button></form>';
                 } 
+                
+                popupContent += '</div>';
                 
                 marker.bindPopup(popupContent);
                 
@@ -363,8 +387,11 @@
             const sliderValue = document.getElementById('slider-value');
             const value = parseInt(this.value);
             
+            this.setAttribute('aria-valuenow', value);
+            
             if (value === 500) {
                 sliderValue.textContent = 'Sin límite';
+                this.setAttribute('aria-valuetext', 'Sin límite');
                 
                 if (radiusCircle) {
                     map.removeLayer(radiusCircle);
@@ -380,8 +407,31 @@
                     map.fitBounds(bounds.pad(0.1));
                 }
             } else {
-                sliderValue.textContent = value + ' km';
+                const valueText = value + ' km';
+                sliderValue.textContent = valueText;
+                this.setAttribute('aria-valuetext', valueText);
                 applyRadiusFilter(value);
+            }
+        });
+
+        document.getElementById('distance-slider').addEventListener('keydown', function(e) {
+            let newValue = parseInt(this.value);
+            const step = 10; 
+            
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                newValue = Math.min(500, newValue + step);
+                this.value = newValue;
+                this.dispatchEvent(new Event('input'));
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                newValue = Math.max(1, newValue - step);
+                this.value = newValue;
+                this.dispatchEvent(new Event('input'));
+            } else if (e.key === 'Home') {
+                this.value = 1;
+                this.dispatchEvent(new Event('input'));
+            } else if (e.key === 'End') {
+                this.value = 500;
+                this.dispatchEvent(new Event('input'));
             }
         });
 
@@ -427,12 +477,12 @@
         searchContainer.className = 'card mt-3';
         searchContainer.innerHTML = `
             <div class="card-body">
-                <h5 class="card-title"><%= t("organization_alliances.map.find_organization") %></h5>
+                <h5 class="card-title" id="find-organization-title"><%= t("organization_alliances.map.find_organization") %></h5>
                 <div class="row g-3 align-items-end">
                     <div class="col-md-10">
                         <label for="organization-selector" class="form-label"><%= t("organization_alliances.map.select_organization") %></label>
                         <div class="input-group mb-0">
-                            <select class="form-select" id="organization-selector">
+                            <select class="form-select" id="organization-selector" aria-describedby="find-organization-title">
                                 <option value=""><%= t('organization_alliances.map.select_organization') %></option>
                                 ${orgsWithCoordinates.map(org => `
                                     <option value="${org.id}">${org.name}</option>
@@ -441,7 +491,8 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-secondary" id="locate-organization-btn">
+                        <button class="btn btn-secondary" id="locate-organization-btn" 
+                            aria-label="<%= t("organization_alliances.map.locate_aria") %>">
                             <%= t("organization_alliances.map.locate") %>
                         </button>
                     </div>
@@ -452,16 +503,43 @@
         document.querySelector('.card-body').appendChild(searchContainer);
         
         document.getElementById('locate-organization-btn').addEventListener('click', function() {
-            const selectedId = parseInt(document.getElementById('organization-selector').value);
+            const selector = document.getElementById('organization-selector');
+            const selectedId = parseInt(selector.value);
             if (selectedId && markers[selectedId]) {
                 const marker = markers[selectedId];
+                const selectedOrgName = selector.options[selector.selectedIndex].text;
                 map.setView(marker.getLatLng(), 13);
                 marker.openPopup();
+                
+                const announcement = document.createElement('div');
+                announcement.setAttribute('aria-live', 'polite');
+                announcement.className = 'visually-hidden';
+                announcement.textContent = '<%= t("organization_alliances.map.located_organization") %>' + selectedOrgName;
+                document.body.appendChild(announcement);
+                
+                setTimeout(() => {
+                    document.body.removeChild(announcement);
+                }, 3000);
             }
         });
-        
+
+        document.getElementById('alliance-map').addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '=') {
+                map.zoomIn();
+            } else if (e.key === '-' || e.key === '_') {
+                map.zoomOut();
+            }
+        });
+
         setTimeout(function() {
             map.invalidateSize();
+
+            const accessibilityInstructions = document.createElement('div');
+            accessibilityInstructions.id = 'map-instructions';
+            accessibilityInstructions.className = 'visually-hidden';
+            accessibilityInstructions.setAttribute('aria-hidden', 'false');
+            accessibilityInstructions.textContent = '<%= t("organization_alliances.map.keyboard_instructions") %>';
+            document.getElementById('alliance-map').appendChild(accessibilityInstructions);
         }, 100);
     });
 </script>

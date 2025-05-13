@@ -307,6 +307,7 @@ es:
       actions: Acciones
     to: a
     filter_by_organizations: "Filtrar por organizaciones"
+    loading: "Cargando..."
   inquiries:
     edit:
       submit: Cambiar demanda
@@ -365,6 +366,10 @@ es:
       center_point: "Punto central"
       invalid_radius: "Por favor, introduce un radio válido"
       reset: "Resetear"
+      reset_aria: "Resetear filtro de distancia a valores predeterminados"
+      slider_label: "Seleccionar radio de distancia en kilómetros"
+      slider_instructions: "Usa las flechas izquierda y derecha para reducir o aumentar el radio. Home para ir a 1km y End para Sin límite."
+      org_info: "información de la organización"
     no_organizations_in_radius: "No hay organizaciones dentro del radio especificado"
     current_organization_no_coordinates: "Tu organización no tiene coordenadas registradas"
   multi_transfers:
@@ -407,6 +412,7 @@ es:
     destroyed: "La alianza ha finalizado"
     error_destroying: "No se pudo finalizar la alianza"
     not_authorized: "No estás autorizado para gestionar alianzas"
+    navigation_label: "Navegación de estados de alianza"
     organization: "Organización"
     city: "Ciudad"
     members: "Miembros"
@@ -425,6 +431,7 @@ es:
     confirm_cancel: "¿Estás seguro de que quieres cancelar esta solicitud de alianza?"
     confirm_end: "¿Estás seguro de que quieres finalizar esta alianza?"
     search_organizations: "Buscar organizaciones"
+    search_organizations_aria: "Buscar nuevas organizaciones para establecer alianzas"
     status:
       pending: "Solicitudes Pendientes"
       accepted: "Alianzas Activas"
@@ -441,6 +448,11 @@ es:
       select_organization: "Seleccionar organización"
       locate: "Localizar"
       alliance_status: "Estado de la alianza"
+      legend: "Leyenda del mapa"
+      map_description: "Mapa interactivo de alianzas entre organizaciones"
+      locate_aria: "Localizar la organización seleccionada en el mapa"
+      located_organization: "Se ha localizado la organización: "
+      keyboard_instructions: "Usa las teclas + y - para acercar y alejar el mapa. Usa el tabulador para navegar entre marcadores."
     view:
       list: "Lista"
       map: "Mapa"

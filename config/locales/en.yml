@@ -306,6 +306,7 @@ en:
       actions: Actions
     to: To
     filter_by_organizations: "Filter by organizations"
+    loading: "Loading..."
   inquiries:
     edit:
       submit: Change request
@@ -355,6 +356,7 @@ en:
     contact: "Contact"
     filter:
       title: "Filter by distance"
+      title_km: "Filter by distance in kms"
       radius: "Radius (km)"
       radius_from_org: "Radius in km from your organization"
       apply: "Apply filter"
@@ -362,6 +364,11 @@ en:
       my_organization: "My organization"
       center_point: "Center point"
       invalid_radius: "Please enter a valid radius"
+      reset: "Reset"
+      reset_aria: "Reset distance filter to default values"
+      slider_label: "Select distance radius in kilometers"
+      slider_instructions: "Use left and right arrow keys to decrease or increase radius. Home for 1km and End for unlimited."
+      org_info: "organization information"
     no_organizations_in_radius: "No organizations found within the specified radius"
     current_organization_no_coordinates: "Your organization does not have registered coordinates"
   multi_transfers:
@@ -404,6 +411,7 @@ en:
     destroyed: "Alliance has been ended"
     error_destroying: "Could not end alliance"
     not_authorized: "You are not authorized to manage alliances"
+    navigation_label: "Alliance status navigation"
     organization: "Organization"
     city: "City"
     members: "Members"
@@ -422,10 +430,31 @@ en:
     confirm_cancel: "Are you sure you want to cancel this alliance request?"
     confirm_end: "Are you sure you want to end this alliance?"
     search_organizations: "Search organizations"
+    search_organizations_aria: "Search new organizations to establish alliances"
     status:
       pending: "Pending Requests"
       accepted: "Active Alliances"
       rejected: "Rejected Requests"
+    map:
+      current_organization: "Current Organization"
+      allied_organization: "Allied Organization"
+      other_organization: "Other Organization"
+      accepted_alliance: "Accepted Alliance"
+      pending_alliance: "Pending Alliance"
+      rejected_alliance: "Rejected Alliance"
+      no_coordinates: "No organizations with coordinates to display on the map"
+      find_organization: "Find organization"
+      select_organization: "Select organization"
+      locate: "Locate"
+      alliance_status: "Alliance status"
+      legend: "Map legend"
+      map_description: "Interactive map of alliances between organizations"
+      locate_aria: "Locate the selected organization on the map"
+      located_organization: "Located organization: "
+      keyboard_instructions: "Use + and - keys to zoom in and out. Use tab to navigate between markers."
+    view:
+      list: "List"
+      map: "Map"
     errors:
       pending_alliance_exists: "A pending alliance already exists with this organization"
       active_alliance_exists: "An active alliance already exists with this organization"
