@@ -560,36 +560,55 @@ en:
       reason: Reason
       to: To
       transfers: All transfers
-    demographics:
-      by_ages: By ages
-      by_gender: By gender
-      demographics: Demographics data
-      female: Female
-      male: Male
-      num_people: "# of people"
-      unknown: Unknown
-    global_activity:
-      bank_activity: Bank Activity
-      global_activity: Global Activity
-      num_swaps: " Transactions"
-      per_month: By Month
-      show: Show
-      total_hours: " Hours transfered"
-      users_reg: " Registered users"
-    inactive_users:
-      days_without_swaps: Days without transactions
-      inactive_users: Inactive users
-      last_movement: Last transaction
-      no_movements: Without transactions
-    last_login:
-      last_login: Last login
-      never_login: Never login
-    type_swaps:
-      type_of_swaps: Type of transactions
-      without_category: Without category
-      without_tags: Without tags
-    without_offers:
-      without_offers: Without offers
+    alliance_transfers:
+      alliance_transfers: Alliance Transfers
+      no_alliances: There are no active allied organizations. To view organization-to-organization transfer statistics, you must first establish an alliance.
+      alliance_with: "Alliance with %{org}"
+      filter_by_organization: "Filter by organization"
+      all_organizations: "All organizations"
+      from_date: "From"
+      to_date: "To"
+      apply_filters: "Apply filters"
+      apply_filters_aria: "Apply search filters"
+      transfers_summary: "Transfers summary"
+      organization: "Organization"
+      outgoing_transfers: "Outgoing transfers"
+      incoming_transfers: "Incoming transfers"
+      outgoing_hours: "Outgoing hours"
+      incoming_hours: "Incoming hours"
+      total_transfers: "Total transfers"
+      balance_chart: "Balance with allied organizations"
+      balance_with_allied_organizations: "Time balance with allied organizations"
+      hours: "Hours"
+      balance: "Balance"
+      transfers_over_time: "Evolution over time"
+      time_evolution_with: "Time evolution with %{org}"
+      outgoing: "Outgoing"
+      incoming: "Incoming"
+      select_organization_for_details: "Select an organization to view details"
+      select_organization_subtitle: "Use the organization filter to see detailed time evolution"
+      transfers: "Transfers"
+      filter_form_label: "Statistics filter form"
+      org_select_help: "Select an organization to filter statistics"
+      from_date_help: "Select the start date to filter statistics"
+      to_date_help: "Select the end date to filter statistics"
+      table_summary: "Table with summary of transfers between allied organizations"
+      view_organization: "View details of organization %{org}"
+      balance_chart_desc: "Bar chart showing the balance of hours with each allied organization"
+      time_chart_desc: "Chart showing the time evolution of transfers between all organizations"
+      time_chart_desc_with_org: "Chart showing the time evolution of transfers with %{org}"
+      balance_data_table: "Balance data with allied organizations"
+      time_data_table: "Time evolution data with %{org}"
+      month: "Month"
+      organizations_accessibility_desc: "List of allied organizations"
+      hours_accessibility_desc: "Hours of time exchanged"
+      transfers_accessibility_desc: "Number of transfers made"
+      balance_chart_accessibility_desc: "Time balance with each allied organization"
+      outgoing_accessibility_desc: "Hours sent to the allied organization"
+      incoming_accessibility_desc: "Hours received from the allied organization"
+      balance_accessibility_desc: "Balance resulting from transfers"
+      total_transfers_accessibility_desc: "Total number of transfers with each organization"
+      months_accessibility_desc: "Months of the analyzed period"
   stats:
     min_balance:
       title: Users Minimum Balance

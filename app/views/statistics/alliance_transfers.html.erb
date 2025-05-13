@@ -1,101 +1,105 @@
-<div class="alliance-statistics-container">
+<div class="alliance-statistics-container" role="main" aria-labelledby="alliance-statistics-title">
     <div class="statistics-header">
-        <h1 class="page-title">
-            <i class="fas fa-handshake header-icon"></i>
+        <h1 id="alliance-statistics-title" class="page-title">
+            <i class="fas fa-handshake header-icon" aria-hidden="true"></i>
             <%= t 'global.statistics' %>: <%= t '.alliance_transfers' %>
         </h1>
     </div>
 
     <% if @no_alliances %>
-        <div class="alert alert-info alliance-alert">
-            <i class="fas fa-info-circle"></i>
+        <div class="alert alert-info alliance-alert" role="alert">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
             <%= t '.no_alliances' %>
         </div>
     <% else %>
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <% if @target_organization %>
-                    <div class="organization-header">
-                        <h2 class="organization-title">
-                            <i class="fas fa-building"></i>
+                    <div class="organization-header" role="region" aria-labelledby="organization-title">
+                        <h2 id="organization-title" class="organization-title">
+                            <i class="fas fa-building" aria-hidden="true"></i>
                             <%= t('.alliance_with', org: @target_organization.name) %>
                         </h2>
                     </div>
                 <% end %>
                 
-                <div class="filters-section">
-                    <form class="row g-3 align-items-end">
+                <div class="filters-section" role="search">
+                    <form class="row g-3 align-items-end" aria-label="<%= t '.filter_form_label' %>">
                         <div class="col-12 col-md-4">
                             <label for="target_organization_id" class="form-label filter-label">
-                                <i class="fas fa-filter"></i>
+                                <i class="fas fa-filter" aria-hidden="true"></i>
                                 <%= t '.filter_by_organization' %>
                             </label>
-                            <select name="target_organization_id" id="target_organization_id" class="form-control form-select-styled">
+                            <select name="target_organization_id" id="target_organization_id" class="form-control form-select-styled" aria-describedby="org-select-help">
                                 <option value=""><%= t '.all_organizations' %></option>
                                 <% @allied_organizations.each do |org| %>
                                     <option value="<%= org.id %>" <%= 'selected' if @target_organization&.id == org.id %>><%= org.name %></option>
                                 <% end %>
                             </select>
+                            <div id="org-select-help" class="visually-hidden"><%= t '.org_select_help' %></div>
                         </div>
                         <div class="col-12 col-md-3">
                             <label for="from" class="form-label filter-label">
-                                <i class="fas fa-calendar-day"></i>
+                                <i class="fas fa-calendar-day" aria-hidden="true"></i>
                                 <%= t '.from_date' %>
                             </label>
-                            <input class="form-control date-input" type="date" name="from" value="<%= params[:from] %>">
+                            <input class="form-control date-input" type="date" name="from" id="from" value="<%= params[:from] %>" aria-describedby="from-date-help">
+                            <div id="from-date-help" class="visually-hidden"><%= t '.from_date_help' %></div>
                         </div>
                         <div class="col-12 col-md-3">
                             <label for="to" class="form-label filter-label">
-                                <i class="fas fa-calendar-check"></i>
+                                <i class="fas fa-calendar-check" aria-hidden="true"></i>
                                 <%= t '.to_date' %>
                             </label>
-                            <input class="form-control date-input" type="date" name="to" value="<%= params[:to] %>">
+                            <input class="form-control date-input" type="date" name="to" id="to" value="<%= params[:to] %>" aria-describedby="to-date-help">
+                            <div id="to-date-help" class="visually-hidden"><%= t '.to_date_help' %></div>
                         </div>
                         <div class="col-12 col-md-2">
-                            <button class="btn btn-secondary" type="submit">
-                                <i class="fas fa-search"></i>
+                            <button class="btn btn-secondary" type="submit" aria-label="<%= t '.apply_filters_aria' %>">
+                                <i class="fas fa-search" aria-hidden="true"></i>
                                 <%= t '.apply_filters' %>
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="summary-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-exchange-alt"></i>
+                <div class="summary-section" role="region" aria-labelledby="summary-section-title">
+                    <h3 id="summary-section-title" class="section-title">
+                        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
                         <%= t '.transfers_summary' %>
                     </h3>
                     <div class="table-responsive table-container">
-                        <table class="table table-hover alliance-table">
+                        <table class="table table-hover alliance-table" aria-labelledby="summary-section-title">
+                            <caption class="visually-hidden"><%= t '.table_summary' %></caption>
                             <thead class="table-header">
                                 <tr>
-                                    <th><i class="fas fa-building"></i> <%= t '.organization' %></th>
-                                    <th class="text-center"><i class="fas fa-arrow-right text-danger"></i> <%= t '.outgoing_transfers' %></th>
-                                    <th class="text-center"><i class="fas fa-arrow-left text-success"></i> <%= t '.incoming_transfers' %></th>
-                                    <th class="text-center"><i class="fas fa-clock text-danger"></i> <%= t '.outgoing_hours' %></th>
-                                    <th class="text-center"><i class="fas fa-clock text-success"></i> <%= t '.incoming_hours' %></th>
-                                    <th class="text-center"><i class="fas fa-chart-line"></i> <%= t '.total_transfers' %></th>
+                                    <th scope="col"><i class="fas fa-building" aria-hidden="true"></i> <%= t '.organization' %></th>
+                                    <th scope="col" class="text-center"><i class="fas fa-arrow-right text-danger" aria-hidden="true"></i> <%= t '.outgoing_transfers' %></th>
+                                    <th scope="col" class="text-center"><i class="fas fa-arrow-left text-success" aria-hidden="true"></i> <%= t '.incoming_transfers' %></th>
+                                    <th scope="col" class="text-center"><i class="fas fa-clock text-danger" aria-hidden="true"></i> <%= t '.outgoing_hours' %></th>
+                                    <th scope="col" class="text-center"><i class="fas fa-clock text-success" aria-hidden="true"></i> <%= t '.incoming_hours' %></th>
+                                    <th scope="col" class="text-center"><i class="fas fa-chart-line" aria-hidden="true"></i> <%= t '.total_transfers' %></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% @transfers_summary.each do |org_id, data| %>
                                     <tr class="table-row">
-                                        <td class="organization-name">
-                                            <%= link_to data[:name], organization_path(org_id), class: "org-link" %>
-                                        </td>
-                                        <td class="text-center outgoing-data">
+                                        <th scope="row" class="organization-name">
+                                            <%= link_to data[:name], organization_path(org_id), class: "org-link", aria: { label: t('.view_organization', org: data[:name]) } %>
+                                        </th>
+                                        <td class="text-center outgoing-data" data-label="<%= t '.outgoing_transfers' %>">
                                             <span class="badge bg-danger rounded-pill"><%= data[:outgoing_count] %></span>
                                         </td>
-                                        <td class="text-center incoming-data">
+                                        <td class="text-center incoming-data" data-label="<%= t '.incoming_transfers' %>">
                                             <span class="badge bg-success rounded-pill"><%= data[:incoming_count] %></span>
                                         </td>
-                                        <td class="text-center hours-data">
+                                        <td class="text-center hours-data" data-label="<%= t '.outgoing_hours' %>">
                                             <span class="text-danger fw-bold"><%= data[:outgoing_hours] %></span>
                                         </td>
-                                        <td class="text-center hours-data">
+                                        <td class="text-center hours-data" data-label="<%= t '.incoming_hours' %>">
                                             <span class="text-success fw-bold"><%= data[:incoming_hours] %></span>
                                         </td>
-                                        <td class="text-center total-data">
+                                        <td class="text-center total-data" data-label="<%= t '.total_transfers' %>">
                                             <span class="badge bg-primary rounded-pill"><%= data[:total_transfers] %></span>
                                         </td>
                                     </tr>
@@ -111,22 +115,74 @@
             <div class="col-12 col-lg-6">
                 <div class="card shadow-sm chart-card">
                     <div class="card-body">
-                        <h3 class="card-title">
-                            <i class="fas fa-balance-scale"></i>
+                        <h3 id="balance-chart-title" class="card-title">
+                            <i class="fas fa-balance-scale" aria-hidden="true"></i>
                             <%= t '.balance_chart' %>
                         </h3>
-                        <div id="balance-chart" class="chart-container"></div>
+                        <div id="balance-chart" class="chart-container" aria-labelledby="balance-chart-title" role="img" aria-describedby="balance-chart-desc"></div>
+                        <p id="balance-chart-desc" class="visually-hidden"><%= t '.balance_chart_desc' %></p>
+                        <div class="chart-data-table sr-only visually-hidden">
+                            <table aria-labelledby="balance-chart-title">
+                                <caption><%= t '.balance_data_table' %></caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><%= t '.organization' %></th>
+                                        <th scope="col"><%= t '.balance' %></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% @balance_by_org.each do |_, data| %>
+                                    <tr>
+                                        <th scope="row"><%= data[:name] %></th>
+                                        <td><%= data[:balance].round(2) %> <%= t '.hours' %></td>
+                                    </tr>
+                                    <% end %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-lg-6">
                 <div class="card shadow-sm chart-card">
                     <div class="card-body">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-area"></i>
+                        <h3 id="time-chart-title" class="card-title">
+                            <i class="fas fa-chart-area" aria-hidden="true"></i>
                             <%= t '.transfers_over_time' %>
                         </h3>
-                        <div id="time-chart" class="chart-container"></div>
+                        <div id="time-chart" class="chart-container" aria-labelledby="time-chart-title" role="img" aria-describedby="time-chart-desc"></div>
+                        <p id="time-chart-desc" class="visually-hidden">
+                            <% if @target_organization %>
+                            <%= t '.time_chart_desc_with_org', org: @target_organization.name %>
+                            <% else %>
+                            <%= t '.time_chart_desc' %>
+                            <% end %>
+                        </p>
+                        <% if @target_organization && @transfers_by_month[@target_organization.id] %>
+                        <div class="chart-data-table sr-only visually-hidden">
+                            <table aria-labelledby="time-chart-title">
+                                <caption><%= t '.time_data_table', org: @target_organization.name %></caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><%= t '.month' %></th>
+                                        <th scope="col"><%= t '.outgoing' %></th>
+                                        <th scope="col"><%= t '.incoming' %></th>
+                                        <th scope="col"><%= t '.balance' %></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% @transfers_by_month[@target_organization.id][:months].each do |month, data| %>
+                                    <tr>
+                                        <th scope="row"><%= month %></th>
+                                        <td><%= data[:outgoing] %> <%= t '.hours' %></td>
+                                        <td><%= data[:incoming] %> <%= t '.hours' %></td>
+                                        <td><%= data[:balance] %> <%= t '.hours' %></td>
+                                    </tr>
+                                    <% end %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% end %>
                     </div>
                 </div>
             </div>
@@ -160,11 +216,17 @@
                     },
                     xAxis: {
                         categories: <%= raw @balance_by_org.map { |_, data| data[:name] }.to_json %>,
-                        crosshair: true
+                        crosshair: true,
+                        accessibility: {
+                            description: '<%= t ".organizations_accessibility_desc" %>'
+                        }
                     },
                     yAxis: {
                         title: {
                             text: '<%= t ".hours" %>'
+                        },
+                        accessibility: {
+                            description: '<%= t ".hours_accessibility_desc" %>'
                         }
                     },
                     tooltip: {
@@ -182,9 +244,20 @@
                             colorByPoint: true
                         }
                     },
+                    accessibility: {
+                        announceNewData: {
+                            enabled: true
+                        },
+                        point: {
+                            valueSuffix: ' <%= t ".hours" %>'
+                        }
+                    },
                     series: [{
                         name: '<%= t ".balance" %>',
-                        data: balanceData
+                        data: balanceData,
+                        accessibility: {
+                            description: '<%= t ".balance_chart_accessibility_desc" %>'
+                        }
                     }]
                 });
 
@@ -205,11 +278,17 @@
                             },
                             xAxis: {
                                 categories: months,
-                                crosshair: true
+                                crosshair: true,
+                                accessibility: {
+                                    description: '<%= t ".months_accessibility_desc" %>'
+                                }
                             },
                             yAxis: {
                                 title: {
                                     text: '<%= t ".hours" %>'
+                                },
+                                accessibility: {
+                                    description: '<%= t ".hours_accessibility_desc" %>'
                                 }
                             },
                             tooltip: {
@@ -226,18 +305,34 @@
                                     borderWidth: 0
                                 }
                             },
+                            accessibility: {
+                                keyboardNavigation: {
+                                    seriesNavigation: {
+                                        mode: 'serialize'
+                                    }
+                                }
+                            },
                             series: [{
                                 name: '<%= t ".outgoing" %>',
                                 color: '#e74c3c',
-                                data: outgoingData
+                                data: outgoingData,
+                                accessibility: {
+                                    description: '<%= t ".outgoing_accessibility_desc" %>'
+                                }
                             }, {
                                 name: '<%= t ".incoming" %>',
                                 color: '#27ae60',
-                                data: incomingData
+                                data: incomingData,
+                                accessibility: {
+                                    description: '<%= t ".incoming_accessibility_desc" %>'
+                                }
                             }, {
                                 name: '<%= t ".balance" %>',
                                 color: '#3498db',
-                                data: balanceData
+                                data: balanceData,
+                                accessibility: {
+                                    description: '<%= t ".balance_accessibility_desc" %>'
+                                }
                             }]
                         });
                     <% end %>
@@ -253,11 +348,17 @@
                             text: '<%= t ".select_organization_subtitle" %>'
                         },
                         xAxis: {
-                            type: 'category'
+                            type: 'category',
+                            accessibility: {
+                                description: '<%= t ".organizations_accessibility_desc" %>'
+                            }
                         },
                         yAxis: {
                             title: {
                                 text: '<%= t ".total_transfers" %>'
+                            },
+                            accessibility: {
+                                description: '<%= t ".transfers_accessibility_desc" %>'
                             }
                         },
                         legend: {
@@ -278,11 +379,22 @@
                                 }
                             }
                         },
+                        accessibility: {
+                            announceNewData: {
+                                enabled: true
+                            },
+                            point: {
+                                valueSuffix: ' <%= t ".transfers" %>'
+                            }
+                        },
                         series: [{
                             name: '<%= t ".total_transfers" %>',
                             colorByPoint: true,
                             colors: ['#27ae60', '#3498db', '#e74c3c', '#f39c12', '#8e44ad', '#16a085', '#e67e22', '#2c3e50'],
-                            data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>
+                            data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>,
+                            accessibility: {
+                                description: '<%= t ".total_transfers_accessibility_desc" %>'
+                            }
                         }]
                     });
                 <% end %>

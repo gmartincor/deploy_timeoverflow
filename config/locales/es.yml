@@ -585,6 +585,7 @@ es:
       from_date: "Desde"
       to_date: "Hasta"
       apply_filters: "Aplicar filtros"
+      apply_filters_aria: "Aplicar filtros de búsqueda"
       transfers_summary: "Resumen de transferencias"
       organization: "Organización"
       outgoing_transfers: "Transferencias enviadas"
@@ -602,36 +603,28 @@ es:
       incoming: "Entrante"
       select_organization_for_details: "Selecciona una organización para ver detalles"
       select_organization_subtitle: "Usa el filtro de organizaciones para ver la evolución temporal detallada"
-    demographics:
-      by_ages: Por edades
-      by_gender: Por género
-      demographics: Datos demográficos
-      female: Mujer
-      male: Hombre
-      num_people: Nº personas
-      unknown: Desconocido
-    global_activity:
-      bank_activity: Actividad del banco
-      global_activity: Actividad global
-      num_swaps: " Intercambios"
-      per_month: Por meses
-      show: Mostrar
-      total_hours: " Horas intercambiadas"
-      users_reg: " Altas de usuario"
-    inactive_users:
-      days_without_swaps: Días sin intercambios
-      inactive_users: Usuarios inactivos
-      last_movement: Útimo intercambio
-      no_movements: Sin intercambios
-    last_login:
-      last_login: Último login
-      never_login: Nunca logueado
-    type_swaps:
-      type_of_swaps: Tipos de intercambios
-      without_category: Sin categoría
-      without_tags: Sin etiquetas
-    without_offers:
-      without_offers: Sin ofertas
+      transfers: "Transferencias"
+      filter_form_label: "Formulario de filtrado de estadísticas"
+      org_select_help: "Selecciona una organización para filtrar las estadísticas"
+      from_date_help: "Selecciona la fecha de inicio para filtrar las estadísticas"
+      to_date_help: "Selecciona la fecha final para filtrar las estadísticas"
+      table_summary: "Tabla con resumen de transferencias entre organizaciones aliadas"
+      view_organization: "Ver detalles de la organización %{org}"
+      balance_chart_desc: "Gráfico de barras que muestra el balance de horas con cada organización aliada"
+      time_chart_desc: "Gráfico que muestra la evolución temporal de las transferencias entre todas las organizaciones"
+      time_chart_desc_with_org: "Gráfico que muestra la evolución temporal de transferencias con %{org}"
+      balance_data_table: "Datos de balance con organizaciones aliadas"
+      time_data_table: "Datos de evolución temporal con %{org}"
+      month: "Mes"
+      organizations_accessibility_desc: "Lista de organizaciones aliadas"
+      hours_accessibility_desc: "Horas de tiempo intercambiadas"
+      transfers_accessibility_desc: "Cantidad de transferencias realizadas"
+      balance_chart_accessibility_desc: "Balance de tiempo con cada organización aliada"
+      outgoing_accessibility_desc: "Horas enviadas a la organización aliada"
+      incoming_accessibility_desc: "Horas recibidas de la organización aliada"
+      balance_accessibility_desc: "Balance resultante de las transferencias"
+      total_transfers_accessibility_desc: "Número total de transferencias con cada organización"
+      months_accessibility_desc: "Meses del período analizado"
   stats:
     min_balance:
       title: Usuarios Saldo Mínimo
