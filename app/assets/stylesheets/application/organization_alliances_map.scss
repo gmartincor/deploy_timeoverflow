@@ -2,6 +2,47 @@
   .leaflet-popup-content {
     min-width: 200px;
   }
+  
+  // Dimensiones del mapa (antes en línea en el HTML)
+  height: 500px;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+// Estilos para los iconos de las organizaciones en la leyenda
+.org-icon {
+  font-size: 18px;
+  
+  &.current-organization {
+    color: #0d6efd;
+  }
+  
+  &.allied-organization {
+    color: #198754;
+  }
+  
+  &.other-organization {
+    color: #6c757d;
+  }
+}
+
+// Estilos para las líneas de alianzas en la leyenda
+.alliance-line {
+  display: inline-block;
+  width: 50px;
+  height: 3px;
+  
+  &.accepted {
+    background-color: green;
+  }
+  
+  &.pending {
+    background-color: orange;
+  }
+  
+  &.rejected {
+    background-color: red;
+  }
 }
 
 .leaflet-control-geocoder {
@@ -43,4 +84,36 @@
     padding: 0 !important;
     margin: 0 !important;
   }
+}
+
+// Nuevos estilos para el filtro de radio
+.radius-filter-card {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.center-marker-container {
+  background-color: transparent;
+}
+
+.center-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #3388ff;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #3388ff;
+}
+
+.distance-badge {
+  background-color: #17a2b8;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.radius-circle {
+  stroke-dasharray: 5, 5;
 }

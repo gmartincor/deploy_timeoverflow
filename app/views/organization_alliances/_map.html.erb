@@ -65,6 +65,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="card radius-filter-card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= t('maps.filter.title') %></h5>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-10">
+                                <label for="distance-radius" class="form-label"><%= t('maps.filter.radius_from_org') %></label>
+                                <div class="input-group mb-0">
+                                    <input type="number" class="form-control" id="distance-radius" min="1" max="500" value="50">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-secondary" id="apply-radius-filter">
+                                    <%= t('maps.filter.apply') %>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -82,9 +100,6 @@
         const alliances = <%= raw alliance_map_data.to_json %>;
         const currentOrgId = <%= current_organization.id %>;
         const selectedStatus = '<%= @status %>';
-        
-        console.log('Organizaciones:', organizations);
-        console.log('Alianzas:', alliances);
         
         const mapElement = document.getElementById('alliance-map');
         mapElement.innerHTML = '';
@@ -108,10 +123,23 @@
             return;
         }
         
-        const markers = {};
+        let markers = {};
+        let polylines = [];
         const bounds = L.latLngBounds();
+        let radiusCircle = null;
         
-        // Función para verificar si existe una solicitud pendiente entre dos organizaciones
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
         function hasPendingAlliance(orgId) {
             return alliances.some(alliance => 
                 alliance.status === 'pending' && (
@@ -121,7 +149,6 @@
             );
         }
 
-        // Función para verificar si existe una alianza aceptada entre dos organizaciones
         function hasAcceptedAlliance(orgId) {
             return alliances.some(alliance => 
                 alliance.status === 'accepted' && (
@@ -131,7 +158,6 @@
             );
         }
 
-        // Función para verificar si existe una alianza rechazada entre dos organizaciones
         function hasRejectedAlliance(orgId) {
             return alliances.some(alliance => 
                 alliance.status === 'rejected' && (
@@ -141,7 +167,6 @@
             );
         }
         
-        // Crear elementos HTML para los iconos personalizados
         function createCustomIcon(color, size) {
             const iconHtml = `<div class="map-icon" style="font-size: ${size}px; color: ${color};"><span class="glyphicon glyphicon-home"></span></div>`;
             
@@ -153,112 +178,249 @@
             });
         }
         
-        orgsWithCoordinates.forEach(function(org) {
-            const isAllied = hasAcceptedAlliance(org.id);
-            const isPending = hasPendingAlliance(org.id);
-            const isRejected = hasRejectedAlliance(org.id);
-            
-            let iconColor;
-            let iconSize;
-            
-            if (org.id === currentOrgId) {
-                iconColor = '#0d6efd'; 
-                iconSize = 30;
-            } else if (isAllied) {
-                iconColor = '#198754'; 
-                iconSize = 28;
-            } else {
-                iconColor = '#6c757d'; 
-                iconSize = 26;
+        function createCenterMarker() {
+            return L.divIcon({
+                html: '<div class="center-marker"></div>',
+                className: 'center-marker-container',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+        }
+        
+        function drawMarkersAndLines() {
+            for (let id in markers) {
+                map.removeLayer(markers[id]);
             }
             
-            const customIcon = createCustomIcon(iconColor, iconSize);
+            polylines.forEach(line => map.removeLayer(line));
+            polylines = [];
             
-            const marker = L.marker([parseFloat(org.latitude), parseFloat(org.longitude)], {
-                icon: customIcon
-            }).addTo(map);
+            if (radiusCircle) {
+                map.removeLayer(radiusCircle);
+                radiusCircle = null;
+            }
             
-            let popupContent = '<strong>' + org.name + '</strong><br>' + 
-                (org.city ? org.city + '<br>' : '') + 
-                (org.address ? org.address + '<br>' : '') + 
-                '<br><a href="/organizations/' + org.id + '" class="btn btn-sm btn-primary">' + 
-                '<%= t("global.show") %></a>';
+            markers = {};
+            const newBounds = L.latLngBounds();
+            
+            orgsWithCoordinates.forEach(function(org) {
+                const isAllied = hasAcceptedAlliance(org.id);
+                const isPending = hasPendingAlliance(org.id);
+                const isRejected = hasRejectedAlliance(org.id);
                 
-            if (org.id !== currentOrgId && !isPending && !isAllied && !isRejected) {
-                popupContent += ' <form action="/organization_alliances" method="post" style="display:inline;">' +
-                    '<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">' +
-                    '<input type="hidden" name="organization_alliance[target_organization_id]" value="' + org.id + '">' +
-                    '<button type="submit" class="btn btn-sm btn-secondary">' +
-                    '<%= t("organization_alliances.request_alliance") %></button></form>';
-            } 
-            
-            marker.bindPopup(popupContent);
-            
-            markers[org.id] = marker;
-            bounds.extend(marker.getLatLng());
-        });
-        
-        alliances.forEach(function(alliance) {
-            if (selectedStatus !== alliance.status && selectedStatus !== 'all') return;
-            
-            const sourceMarker = markers[alliance.source_id];
-            const targetMarker = markers[alliance.target_id];
-            
-            if (sourceMarker && targetMarker) {
-                const sourceLatLng = sourceMarker.getLatLng();
-                const targetLatLng = targetMarker.getLatLng();
+                let iconColor;
+                let iconSize;
                 
-                let lineStyle;
-                switch(alliance.status) {
-                    case 'accepted':
-                        lineStyle = {
-                            color: 'green',
-                            weight: 3,
-                            opacity: 0.7
-                        };
-                        break;
-                    case 'pending':
-                        lineStyle = {
-                            color: 'orange',
-                            weight: 2,
-                            opacity: 0.7
-                        };
-                        break;
-                    case 'rejected':
-                        lineStyle = {
-                            color: 'red',
-                            weight: 2,
-                            opacity: 0.5
-                        };
-                        break;
+                if (org.id === currentOrgId) {
+                    iconColor = '#0d6efd'; 
+                    iconSize = 30;
+                } else if (isAllied) {
+                    iconColor = '#198754'; 
+                    iconSize = 28;
+                } else {
+                    iconColor = '#6c757d'; 
+                    iconSize = 26;
                 }
                 
-                const polyline = L.polyline([sourceLatLng, targetLatLng], lineStyle).addTo(map);
+                const customIcon = createCustomIcon(iconColor, iconSize);
                 
-                polyline.bindTooltip('<%= t("organization_alliances.map.alliance_status") %>: ' + 
-                                                     '<%= t("organization_alliances.status") %>.' + alliance.status);
+                const marker = L.marker([parseFloat(org.latitude), parseFloat(org.longitude)], {
+                    icon: customIcon
+                }).addTo(map);
+                
+                let popupContent = '<strong>' + org.name + '</strong><br>' + 
+                    (org.city ? org.city + '<br>' : '') + 
+                    (org.address ? org.address + '<br>' : '');
+                
+                if (org.distance) {
+                    popupContent += `<span class="distance-badge">${org.distance.toFixed(1)} <%= t('maps.km') %></span><br>`;
+                }
+                
+                popupContent += '<br><a href="/organizations/' + org.id + '" class="btn btn-sm btn-primary">' + 
+                    '<%= t("global.show") %></a>';
+                    
+                if (org.id !== currentOrgId && !isPending && !isAllied && !isRejected) {
+                    popupContent += ' <form action="/organization_alliances" method="post" style="display:inline;">' +
+                        '<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">' +
+                        '<input type="hidden" name="organization_alliance[target_organization_id]" value="' + org.id + '">' +
+                        '<button type="submit" class="btn btn-sm btn-secondary">' +
+                        '<%= t("organization_alliances.request_alliance") %></button></form>';
+                } 
+                
+                marker.bindPopup(popupContent);
+                
+                markers[org.id] = marker;
+                newBounds.extend(marker.getLatLng());
+            });
+            
+            alliances.forEach(function(alliance) {
+                if (selectedStatus !== alliance.status && selectedStatus !== 'all') return;
+                
+                const sourceMarker = markers[alliance.source_id];
+                const targetMarker = markers[alliance.target_id];
+                
+                if (sourceMarker && targetMarker) {
+                    const sourceLatLng = sourceMarker.getLatLng();
+                    const targetLatLng = targetMarker.getLatLng();
+                    
+                    let lineStyle;
+                    switch(alliance.status) {
+                        case 'accepted':
+                            lineStyle = {
+                                color: 'green',
+                                weight: 3,
+                                opacity: 0.7
+                            };
+                            break;
+                        case 'pending':
+                            lineStyle = {
+                                color: 'orange',
+                                weight: 2,
+                                opacity: 0.7
+                            };
+                            break;
+                        case 'rejected':
+                            lineStyle = {
+                                color: 'red',
+                                weight: 2,
+                                opacity: 0.5
+                            };
+                            break;
+                    }
+                    
+                    const polyline = L.polyline([sourceLatLng, targetLatLng], lineStyle).addTo(map);
+                    
+                    polyline.bindTooltip('<%= t("organization_alliances.map.alliance_status") %>: ' + 
+                                                         '<%= t("organization_alliances.status") %>.' + alliance.status);
+                    
+                    polylines.push(polyline);
+                }
+            });
+            
+            if (newBounds.isValid()) {
+                map.fitBounds(newBounds.pad(0.1));
             }
+        }
+        
+        drawMarkersAndLines();
+        
+        function filterByRadius(centerLat, centerLng, radius) {
+            const filteredOrgs = orgsWithCoordinates.filter(org => {
+                if (!org.latitude || !org.longitude) return false;
+                
+                const dist = calculateDistance(
+                    centerLat, 
+                    centerLng, 
+                    parseFloat(org.latitude), 
+                    parseFloat(org.longitude)
+                );
+                
+                org.distance = dist;
+                
+                return dist <= radius;
+            });
+            
+            if (filteredOrgs.length === 0) {
+                alert('<%= t("maps.no_organizations_in_radius") %>');
+                return false;
+            }
+            
+            if (radiusCircle) {
+                map.removeLayer(radiusCircle);
+            }
+            
+            radiusCircle = L.circle([centerLat, centerLng], {
+                radius: radius * 1000,
+                color: '#3388ff',
+                weight: 2,
+                opacity: 0.6,
+                fillColor: '#3388ff',
+                fillOpacity: 0.1,
+                className: 'radius-circle'
+            }).addTo(map);
+            
+            orgsWithCoordinates.length = 0;
+            filteredOrgs.forEach(org => orgsWithCoordinates.push(org));
+            
+            drawMarkersAndLines();
+            
+            const centerIcon = createCenterMarker();
+            const centerMarker = L.marker([centerLat, centerLng], {
+                icon: centerIcon
+            }).addTo(map);
+            
+            centerMarker.bindTooltip('<%= t("maps.filter.center_point") %>');
+            
+            return true;
+        }
+        
+        document.getElementById('apply-radius-filter').addEventListener('click', function() {
+            const radius = parseFloat(document.getElementById('distance-radius').value);
+            
+            if (radius <= 0 || isNaN(radius)) {
+                alert('<%= t("maps.filter.invalid_radius") %>');
+                return;
+            }
+            
+            const currentOrg = organizations.find(org => org.id === currentOrgId);
+            
+            if (!currentOrg || !currentOrg.latitude || !currentOrg.longitude) {
+                alert('<%= t("maps.current_organization_no_coordinates") %>');
+                return;
+            }
+            
+            filterByRadius(
+                parseFloat(currentOrg.latitude),
+                parseFloat(currentOrg.longitude),
+                radius
+            );
         });
         
-        if (bounds.isValid()) {
-            map.fitBounds(bounds.pad(0.1));
-        }
+        
+        document.getElementById('apply-radius-filter').addEventListener('click', function() {
+            const radius = parseFloat(document.getElementById('distance-radius').value);
+            
+            if (radius <= 0 || isNaN(radius)) {
+                alert('<%= t("maps.filter.invalid_radius") %>');
+                return;
+            }
+            
+            const currentOrg = organizations.find(org => org.id === currentOrgId);
+            
+            if (!currentOrg || !currentOrg.latitude || !currentOrg.longitude) {
+                alert('<%= t("maps.current_organization_no_coordinates") %>');
+                return;
+            }
+            
+            filterByRadius(
+                parseFloat(currentOrg.latitude),
+                parseFloat(currentOrg.longitude),
+                radius
+            );
+        });
         
         const searchContainer = document.createElement('div');
         searchContainer.className = 'card mt-3';
         searchContainer.innerHTML = `
             <div class="card-body">
                 <h5 class="card-title"><%= t("organization_alliances.map.find_organization") %></h5>
-                <div class="input-group mb-3">
-                    <select class="form-select" id="organization-selector">
-                        <option value=""><%= t('organization_alliances.map.select_organization') %></option>
-                        ${orgsWithCoordinates.map(org => `
-                            <option value="${org.id}">${org.name}</option>
-                        `).join('')}
-                    </select>
-                    <button class="btn btn-primary" id="locate-organization-btn">
-                        <%= t("organization_alliances.map.locate") %>
-                    </button>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-10">
+                        <label for="organization-selector" class="form-label"><%= t("organization_alliances.map.select_organization") %></label>
+                        <div class="input-group mb-0">
+                            <select class="form-select" id="organization-selector">
+                                <option value=""><%= t('organization_alliances.map.select_organization') %></option>
+                                ${orgsWithCoordinates.map(org => `
+                                    <option value="${org.id}">${org.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary" id="locate-organization-btn">
+                            <%= t("organization_alliances.map.locate") %>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -272,6 +434,12 @@
                 map.setView(marker.getLatLng(), 13);
                 marker.openPopup();
             }
+        });
+        
+        document.getElementById('distance-radius').addEventListener('change', function() {
+            const value = parseInt(this.value);
+            if (value <= 0) this.value = 1;
+            if (value > 500) this.value = 500;
         });
         
         setTimeout(function() {

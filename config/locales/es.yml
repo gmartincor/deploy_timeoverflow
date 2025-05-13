@@ -355,14 +355,16 @@ es:
     km: "km"
     contact: "Contactar"
     filter:
-      title: "Filtrar organizaciones"
-      all: "Todas"
-      active: "Activas"
-      apply: "Aplicar filtros"
-    organization_popup:
-      member_count: "Miembros: %{count}"
-      visit_profile: "Ver perfil"
-      get_directions: "Cómo llegar"
+      title: "Filtrar por distancia"
+      radius: "Radio (km)"
+      radius_from_org: "Radio en km desde tu organización"
+      apply: "Aplicar filtro"
+      from: "Desde"
+      my_organization: "Mi organización"
+      center_point: "Punto central"
+      invalid_radius: "Por favor, introduce un radio válido"
+    no_organizations_in_radius: "No hay organizaciones dentro del radio especificado"
+    current_organization_no_coordinates: "Tu organización no tiene coordenadas registradas"
   multi_transfers:
     multi_transfers: Transferencias múltiples
     step:

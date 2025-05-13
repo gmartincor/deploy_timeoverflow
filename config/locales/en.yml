@@ -354,14 +354,16 @@ en:
     km: "km"
     contact: "Contact"
     filter:
-      title: "Filter organizations"
-      all: "All"
-      active: "Active"
-      apply: "Apply filters"
-    organization_popup:
-      member_count: "Members: %{count}"
-      visit_profile: "View profile"
-      get_directions: "Get directions"
+      title: "Filter by distance"
+      radius: "Radius (km)"
+      radius_from_org: "Radius in km from your organization"
+      apply: "Apply filter"
+      from: "From"
+      my_organization: "My organization"
+      center_point: "Center point"
+      invalid_radius: "Please enter a valid radius"
+    no_organizations_in_radius: "No organizations found within the specified radius"
+    current_organization_no_coordinates: "Your organization does not have registered coordinates"
   multi_transfers:
     multi_transfers: Multi transfers
     step:
