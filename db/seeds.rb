@@ -142,26 +142,25 @@ end
 # New organizations with location data
 org3 = Organization.find_or_create_by(name: "Banco del tiempo 3")
 org3.update(
-  address: "Avenida Diagonal, 460",
-  neighborhood: "Les Corts",
-  city: "Barcelona"
+  address: "Ronda de Poniente, 2",
+  neighborhood: "",
+  city: "Motril"
 )
 
 org4 = Organization.find_or_create_by(name: "Banco del tiempo 4")
 org4.update(
-  address: "Calle Alcalá, 189",
-  neighborhood: "Salamanca",
-  city: "Madrid"
+  address: "Calle Monforte, 2",
+  neighborhood: "",
+  city: "Lugo"
 )
 
 org5 = Organization.find_or_create_by(name: "Banco del tiempo 5")
 org5.update(
-  address: "Carrer de la Marina, 253",
-  neighborhood: "Sagrada Familia",
-  city: "Barcelona"
+  address: "Camino de Ronda, 60",
+  neighborhood: "",
+  city: "Granada"
 )
 
-# Añadir más bancos de tiempo con ubicaciones distribuidas por España
 valencia_org = Organization.find_or_create_by(name: "Banco de Tiempo Valencia")
 valencia_org.update(
   address: "Calle Colón, 34",
@@ -171,8 +170,8 @@ valencia_org.update(
 
 sevilla_org = Organization.find_or_create_by(name: "Banco de Tiempo Sevilla")
 sevilla_org.update(
-  address: "Calle Sierpes, 48",
-  neighborhood: "Centro",
+  address: "Calle San Jacinto, 89",
+  neighborhood: " ",
   city: "Sevilla"
 )
 
