@@ -7,8 +7,5 @@
 //= require vendor/export-libs/svg2pdf.min
 //= require vendor/export-libs/canvg
 
-// Restauramos la configuración predeterminada de Highcharts sin sobreescribir nada
 Highcharts.setOptions({
-  // No modificamos la configuración predeterminada de exportación
-  // para permitir que Highcharts use su comportamiento estándar
 });
