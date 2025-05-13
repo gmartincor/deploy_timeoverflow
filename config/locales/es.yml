@@ -356,6 +356,7 @@ es:
     contact: "Contactar"
     filter:
       title: "Filtrar por distancia"
+      title_km: "Filtrar por distancia en kms"
       radius: "Radio (km)"
       radius_from_org: "Radio en km desde tu organización"
       apply: "Aplicar filtro"
@@ -363,6 +364,7 @@ es:
       my_organization: "Mi organización"
       center_point: "Punto central"
       invalid_radius: "Por favor, introduce un radio válido"
+      reset: "Resetear"
     no_organizations_in_radius: "No hay organizaciones dentro del radio especificado"
     current_organization_no_coordinates: "Tu organización no tiene coordenadas registradas"
   multi_transfers:

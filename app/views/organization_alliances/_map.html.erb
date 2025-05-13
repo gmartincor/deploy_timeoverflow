@@ -67,17 +67,18 @@
                 </div>
                 <div class="card radius-filter-card mt-3">
                     <div class="card-body">
-                        <h5 class="card-title"><%= t('maps.filter.title') %></h5>
-                        <div class="row g-3 align-items-end">
+                        <h5 class="card-title"><%= t('maps.filter.title_km') %></h5>
+                        <div class="row align-items-center">
                             <div class="col-md-10">
-                                <label for="distance-radius" class="form-label"><%= t('maps.filter.radius_from_org') %></label>
-                                <div class="input-group mb-0">
-                                    <input type="number" class="form-control" id="distance-radius" min="1" max="500" value="50">
+                                <div class="d-flex">
+                                    <span class="me-2">1</span>
+                                    <input type="range" class="form-range flex-grow-1" id="distance-slider" min="1" max="500" value="500">
+                                    <span class="ms-2"><span id="slider-value">Sin límite</span></span>
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-secondary" id="apply-radius-filter">
-                                    <%= t('maps.filter.apply') %>
+                                <button class="btn btn-secondary" id="reset-radius">
+                                    <%= t('maps.filter.reset') %>
                                 </button>
                             </div>
                         </div>
@@ -127,6 +128,7 @@
         let polylines = [];
         const bounds = L.latLngBounds();
         let radiusCircle = null;
+        let originalOrgsData = [...orgsWithCoordinates];
         
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -305,6 +307,9 @@
         drawMarkersAndLines();
         
         function filterByRadius(centerLat, centerLng, radius) {
+            orgsWithCoordinates.length = 0;
+            originalOrgsData.forEach(org => orgsWithCoordinates.push(org));
+            
             const filteredOrgs = orgsWithCoordinates.filter(org => {
                 if (!org.latitude || !org.longitude) return false;
                 
@@ -354,18 +359,60 @@
             return true;
         }
         
-        document.getElementById('apply-radius-filter').addEventListener('click', function() {
-            const radius = parseFloat(document.getElementById('distance-radius').value);
+        document.getElementById('distance-slider').addEventListener('input', function() {
+            const sliderValue = document.getElementById('slider-value');
+            const value = parseInt(this.value);
             
+            if (value === 500) {
+                sliderValue.textContent = 'Sin límite';
+                
+                if (radiusCircle) {
+                    map.removeLayer(radiusCircle);
+                    radiusCircle = null;
+                }
+                
+                orgsWithCoordinates.length = 0;
+                originalOrgsData.forEach(org => orgsWithCoordinates.push(org));
+                
+                drawMarkersAndLines();
+                
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds.pad(0.1));
+                }
+            } else {
+                sliderValue.textContent = value + ' km';
+                applyRadiusFilter(value);
+            }
+        });
+
+        document.getElementById('reset-radius').addEventListener('click', function() {
+            const slider = document.getElementById('distance-slider');
+            slider.value = 500;
+            document.getElementById('slider-value').textContent = 'Sin límite';
+            
+            if (radiusCircle) {
+                map.removeLayer(radiusCircle);
+                radiusCircle = null;
+            }
+            
+            orgsWithCoordinates.length = 0;
+            originalOrgsData.forEach(org => orgsWithCoordinates.push(org));
+            
+            drawMarkersAndLines();
+            
+            if (bounds.isValid()) {
+                map.fitBounds(bounds.pad(0.1));
+            }
+        });
+        
+        function applyRadiusFilter(radius) {
             if (radius <= 0 || isNaN(radius)) {
-                alert('<%= t("maps.filter.invalid_radius") %>');
                 return;
             }
             
             const currentOrg = organizations.find(org => org.id === currentOrgId);
             
             if (!currentOrg || !currentOrg.latitude || !currentOrg.longitude) {
-                alert('<%= t("maps.current_organization_no_coordinates") %>');
                 return;
             }
             
@@ -374,30 +421,7 @@
                 parseFloat(currentOrg.longitude),
                 radius
             );
-        });
-        
-        
-        document.getElementById('apply-radius-filter').addEventListener('click', function() {
-            const radius = parseFloat(document.getElementById('distance-radius').value);
-            
-            if (radius <= 0 || isNaN(radius)) {
-                alert('<%= t("maps.filter.invalid_radius") %>');
-                return;
-            }
-            
-            const currentOrg = organizations.find(org => org.id === currentOrgId);
-            
-            if (!currentOrg || !currentOrg.latitude || !currentOrg.longitude) {
-                alert('<%= t("maps.current_organization_no_coordinates") %>');
-                return;
-            }
-            
-            filterByRadius(
-                parseFloat(currentOrg.latitude),
-                parseFloat(currentOrg.longitude),
-                radius
-            );
-        });
+        }
         
         const searchContainer = document.createElement('div');
         searchContainer.className = 'card mt-3';
@@ -434,12 +458,6 @@
                 map.setView(marker.getLatLng(), 13);
                 marker.openPopup();
             }
-        });
-        
-        document.getElementById('distance-radius').addEventListener('change', function() {
-            const value = parseInt(this.value);
-            if (value <= 0) this.value = 1;
-            if (value > 500) this.value = 500;
         });
         
         setTimeout(function() {
