@@ -436,7 +436,7 @@ en:
       text1: 'Latest offers published:'
       text2: 'Latest requests published:'
     contact_request:
-      subject: "Contact request for your %{post}"
+      subject: "Contact request for %{post}"
       greeting: "Hello %{name},"
       message: "%{requester} from %{organization} time bank is interested in your %{post}."
       requester_info: "Here is their contact information"
