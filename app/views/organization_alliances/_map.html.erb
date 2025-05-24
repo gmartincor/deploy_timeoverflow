@@ -146,7 +146,6 @@
         let markers = {};
         let polylines = [];
         const bounds = L.latLngBounds();
-        let radiusCircle = null;
         let originalOrgsData = [...orgsWithCoordinates];
         
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -209,11 +208,6 @@
             
             polylines.forEach(line => map.removeLayer(line));
             polylines = [];
-            
-            if (radiusCircle) {
-                map.removeLayer(radiusCircle);
-                radiusCircle = null;
-            }
             
             markers = {};
             const newBounds = L.latLngBounds();
@@ -348,20 +342,6 @@
                 return false;
             }
             
-            if (radiusCircle) {
-                map.removeLayer(radiusCircle);
-            }
-            
-            radiusCircle = L.circle([centerLat, centerLng], {
-                radius: radius * 1000,
-                color: '#3388ff',
-                weight: 2,
-                opacity: 0.6,
-                fillColor: '#3388ff',
-                fillOpacity: 0.1,
-                className: 'radius-circle'
-            }).addTo(map);
-            
             orgsWithCoordinates.length = 0;
             filteredOrgs.forEach(org => orgsWithCoordinates.push(org));
             
@@ -386,11 +366,6 @@
             if (value === 500) {
                 sliderValue.textContent = 'Sin límite';
                 this.setAttribute('aria-valuetext', 'Sin límite');
-                
-                if (radiusCircle) {
-                    map.removeLayer(radiusCircle);
-                    radiusCircle = null;
-                }
                 
                 orgsWithCoordinates.length = 0;
                 originalOrgsData.forEach(org => orgsWithCoordinates.push(org));
@@ -433,11 +408,6 @@
             const slider = document.getElementById('distance-slider');
             slider.value = 500;
             document.getElementById('slider-value').textContent = 'Sin límite';
-            
-            if (radiusCircle) {
-                map.removeLayer(radiusCircle);
-                radiusCircle = null;
-            }
             
             orgsWithCoordinates.length = 0;
             originalOrgsData.forEach(org => orgsWithCoordinates.push(org));
