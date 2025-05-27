@@ -45,7 +45,11 @@ class OrganizationAlliancesController < ApplicationController
     authorize @alliance
 
     if @alliance.update(status: params[:status])
-      flash[:notice] = t("organization_alliances.updated")
+      if params[:status] == "accepted"
+        flash[:notice] = t("organization_alliances.alliance_created_successfully")
+      else
+        flash[:notice] = t("organization_alliances.updated")
+      end
     else
       flash[:error] = @alliance.errors.full_messages.to_sentence
     end

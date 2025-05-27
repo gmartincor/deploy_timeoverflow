@@ -24,6 +24,8 @@ class OrganizationAlliance < ApplicationRecord
   def custom_uniqueness_validation
     return false unless source_organization_id.present? && target_organization_id.present?
 
+    return false if persisted?
+
     if OrganizationAlliance.exists?(source_organization_id: source_organization_id, target_organization_id: target_organization_id, status: 'pending') ||
        OrganizationAlliance.exists?(source_organization_id: target_organization_id, target_organization_id: source_organization_id, status: 'pending')
       errors.add(:base, I18n.t('organization_alliances.errors.pending_alliance_exists'))
@@ -33,11 +35,6 @@ class OrganizationAlliance < ApplicationRecord
     elsif OrganizationAlliance.exists?(source_organization_id: source_organization_id, target_organization_id: target_organization_id) ||
           OrganizationAlliance.exists?(source_organization_id: target_organization_id, target_organization_id: source_organization_id)
       errors.add(:base, I18n.t('organization_alliances.errors.alliance_exists'))
-    end
-
-    # Verificar la unicidad básica si no se encontró ninguna condición específica
-    if self.class.where(source_organization_id: source_organization_id, target_organization_id: target_organization_id).where.not(id: id).exists?
-      return true
     end
 
     false

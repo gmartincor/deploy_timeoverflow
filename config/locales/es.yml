@@ -409,6 +409,7 @@ es:
     title: "Alianzas"
     created: "Solicitud de alianza enviada"
     updated: "Estado de alianza actualizado"
+    alliance_created_successfully: "Alianza creada con éxito"
     destroyed: "La alianza ha finalizado"
     error_destroying: "No se pudo finalizar la alianza"
     not_authorized: "No estás autorizado para gestionar alianzas"

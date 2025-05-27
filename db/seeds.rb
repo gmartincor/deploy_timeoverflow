@@ -161,6 +161,13 @@ org5.update(
   city: "Granada"
 )
 
+org6 = Organization.find_or_create_by(name: "Banco del tiempo 6") 
+org6.update(
+  address: "Calle la Curva, 18",
+  neighborhood: "",
+  city: "Almería"
+)
+
 valencia_org = Organization.find_or_create_by(name: "Banco de Tiempo Valencia")
 valencia_org.update(
   address: "Calle Colón, 34",
@@ -301,11 +308,26 @@ User.find_or_create_by(email: "user5@timeoverflow.org") do |user|
   EOF
 end
 
+User.find_or_create_by(email: "gmartincor@uoc.edu") do |user|
+  user.terms_accepted_at = DateTime.now.utc
+  user.confirmed_at = DateTime.now.utc
+  user.password = "1234test"
+  user.password_confirmation = "1234test"
+  user.username = "Guillermo Martín"
+  user.date_of_birth = Date.parse("1990-04-17")
+  user.phone = "658974123"
+  user.alt_phone = "931248756"
+  user.description = <<-EOF
+  Programador y aficionado a la cocina vegetariana. Busco intercambios relacionados con tecnología.
+  EOF
+end
+
 # New memberships
 # Get organization references with the new names
 org3 = Organization.find_by(name: "Banco del tiempo 3")
 org4 = Organization.find_by(name: "Banco del tiempo 4")
 org5 = Organization.find_by(name: "Banco del tiempo 5")
+org6 = Organization.find_by(name: "Banco del tiempo 6")
 
 # Add memberships for admin3/user3 to organization 3
 User.find_by(email: "admin3@timeoverflow.org").members.
@@ -350,6 +372,13 @@ end
 User.find_by(email: "user5@timeoverflow.org").members.
   find_or_create_by(organization: org5) do |member|
   member.manager = false
+  member.entry_date = DateTime.now.utc
+end
+
+# Add memberships for admin4/user4 to organization 6
+User.find_by(email: "guillermomc007@gmail.com").members.
+  find_or_create_by(organization: org6) do |member|
+  member.manager = true
   member.entry_date = DateTime.now.utc
 end
 
@@ -455,6 +484,7 @@ user4_id = User.find_by(email: "user4@timeoverflow.org").id
 guille_id = User.find_by(email: "guillermomc007@gmail.com").id
 admin5_id = User.find_by(email: "admin5@timeoverflow.org").id
 user5_id = User.find_by(email: "user5@timeoverflow.org").id
+guille_id2 = User.find_by(email: "gmartincor@uoc.edu").id
 
 # Ofertas para admin3 (Banco 3)
 Offer.find_or_create_by(title: "Asesoramiento legal básico") do |post|
@@ -715,6 +745,34 @@ Offer.find_or_create_by(title: "Gestión de redes sociales para iniciativas loca
   post.user_id = user5_id
   post.tags = ["Redes sociales", "Marketing", "Comunicación"]
   post.organization_id = org5.id
+end
+
+# Ofertas para admin6 (Banco 6)
+Offer.find_or_create_by(title: "Clases de desarrollo web frontend") do |post|
+  post.description = <<-EOF
+  Ofrezco clases personalizadas de HTML, CSS y JavaScript para principiantes
+  que quieran aprender desarrollo web frontend. Aprenderás a crear sitios
+  web responsivos y atractivos desde cero. Incluyo material práctico y
+  ejercicios para consolidar conocimientos.
+  EOF
+  post.category_id = 6 # Clases
+  post.user_id = guille_id2
+  post.tags = ["Desarrollo web", "Frontend", "Programación"]
+  post.organization_id = org4.id
+end
+
+Offer.find_or_create_by(title: "Talleres de cocina vegetariana") do |post|
+  post.description = <<-EOF
+  Organizo talleres prácticos de cocina vegetariana donde aprenderás a preparar
+  platos nutritivos, sabrosos y fáciles. Desde proteínas vegetales hasta postres
+  saludables. Cada sesión incluye degustación de lo preparado y recetario para
+  llevar a casa. Ideal para quienes quieren incorporar más opciones plant-based
+  a su alimentación.
+  EOF
+  post.category_id = 7 # Ocio
+  post.user_id = guille_id2
+  post.tags = ["Cocina", "Vegetariano", "Alimentación saludable"]
+  post.organization_id = org6.id
 end
 
 # Inquiries
