@@ -376,9 +376,10 @@ User.find_by(email: "user5@timeoverflow.org").members.
 end
 
 # Add memberships for admin4/user4 to organization 6
-User.find_by(email: "guillermomc007@gmail.com").members.
+User.find_by(email: "gmartincor@uoc.edu").members.
   find_or_create_by(organization: org6) do |member|
   member.manager = true
+  member.active = true
   member.entry_date = DateTime.now.utc
 end
 
