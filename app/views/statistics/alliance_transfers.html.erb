@@ -190,22 +190,19 @@
 
         <script type="text/javascript">
             $(function () {
-                var balanceData = <%= raw @balance_by_org.map { |_, data| 
-                    balance = data[:balance].round(2)
-                    if balance >= 0
-                        { 
-                            y: balance,
-                            name: data[:name],
-                            color: '#27ae60'
+                const chartCommonConfig = {
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    accessibility: {
+                        announceNewData: {
+                            enabled: true
                         }
-                    else
-                        {
-                            y: balance,
-                            name: data[:name],
-                            color: '#e74c3c'
-                        }
-                    end
-                }.to_json %>;
+                    }
+                };
                 
                 $('#balance-chart').highcharts({
                     chart: {
@@ -230,12 +227,9 @@
                         }
                     },
                     tooltip: {
-                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        ...chartCommonConfig.tooltip,
                         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
-                        footerFormat: '</table>',
-                        shared: true,
-                        useHTML: true
+                            '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>'
                     },
                     plotOptions: {
                         column: {
@@ -245,16 +239,14 @@
                         }
                     },
                     accessibility: {
-                        announceNewData: {
-                            enabled: true
-                        },
+                        ...chartCommonConfig.accessibility,
                         point: {
                             valueSuffix: ' <%= t ".hours" %>'
                         }
                     },
                     series: [{
                         name: '<%= t ".balance" %>',
-                        data: balanceData,
+                        data: <%= raw @chart_data[:balance].to_json %>,
                         accessibility: {
                             description: '<%= t ".balance_chart_accessibility_desc" %>'
                         }
@@ -262,13 +254,8 @@
                 });
 
                 <% if @target_organization %>
-                    <% org_data = @transfers_by_month[@target_organization.id] %>
-                    <% if org_data %>
-                        var months = <%= raw org_data[:months].keys.to_json %>;
-                        var outgoingData = <%= raw org_data[:months].values.map { |v| v[:outgoing] }.to_json %>;
-                        var incomingData = <%= raw org_data[:months].values.map { |v| v[:incoming] }.to_json %>;
-                        var balanceData = <%= raw org_data[:months].values.map { |v| v[:balance] }.to_json %>;
-                        
+                    <% if @chart_data[:time_series][@target_organization.id] %>
+                        <% time_data = @chart_data[:time_series][@target_organization.id] %>
                         $('#time-chart').highcharts({
                             chart: {
                                 type: 'column'
@@ -277,7 +264,7 @@
                                 text: '<%= t ".time_evolution_with", org: @target_organization.name %>'
                             },
                             xAxis: {
-                                categories: months,
+                                categories: <%= raw time_data[:months].to_json %>,
                                 crosshair: true,
                                 accessibility: {
                                     description: '<%= t ".months_accessibility_desc" %>'
@@ -292,12 +279,9 @@
                                 }
                             },
                             tooltip: {
-                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                ...chartCommonConfig.tooltip,
                                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                    '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>',
-                                footerFormat: '</table>',
-                                shared: true,
-                                useHTML: true
+                                    '<td style="padding:0"><b>{point.y:.2f} <%= t ".hours" %></b></td></tr>'
                             },
                             plotOptions: {
                                 column: {
@@ -315,21 +299,21 @@
                             series: [{
                                 name: '<%= t ".outgoing" %>',
                                 color: '#e74c3c',
-                                data: outgoingData,
+                                data: <%= raw time_data[:outgoing].to_json %>,
                                 accessibility: {
                                     description: '<%= t ".outgoing_accessibility_desc" %>'
                                 }
                             }, {
                                 name: '<%= t ".incoming" %>',
                                 color: '#27ae60',
-                                data: incomingData,
+                                data: <%= raw time_data[:incoming].to_json %>,
                                 accessibility: {
                                     description: '<%= t ".incoming_accessibility_desc" %>'
                                 }
                             }, {
                                 name: '<%= t ".balance" %>',
                                 color: '#3498db',
-                                data: balanceData,
+                                data: <%= raw time_data[:balance].to_json %>,
                                 accessibility: {
                                     description: '<%= t ".balance_accessibility_desc" %>'
                                 }
@@ -365,10 +349,8 @@
                             enabled: false
                         },
                         tooltip: {
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="padding:0"><b>{point.y:.0f} <%= t ".transfers" %></b></td></tr>',
-                            footerFormat: '</table>',
-                            useHTML: true
+                            ...chartCommonConfig.tooltip,
+                            pointFormat: '<tr><td style="padding:0"><b>{point.y:.0f} <%= t ".transfers" %></b></td></tr>'
                         },
                         plotOptions: {
                             series: {
@@ -380,9 +362,7 @@
                             }
                         },
                         accessibility: {
-                            announceNewData: {
-                                enabled: true
-                            },
+                            ...chartCommonConfig.accessibility,
                             point: {
                                 valueSuffix: ' <%= t ".transfers" %>'
                             }
@@ -391,7 +371,7 @@
                             name: '<%= t ".total_transfers" %>',
                             colorByPoint: true,
                             colors: ['#27ae60', '#3498db', '#e74c3c', '#f39c12', '#8e44ad', '#16a085', '#e67e22', '#2c3e50'],
-                            data: <%= raw @transfers_summary.map { |org_id, data| { name: data[:name], y: data[:total_transfers] } }.to_json %>,
+                            data: <%= raw @chart_data[:summary].to_json %>,
                             accessibility: {
                                 description: '<%= t ".total_transfers_accessibility_desc" %>'
                             }

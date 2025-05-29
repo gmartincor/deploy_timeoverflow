@@ -115,6 +115,7 @@ class StatisticsController < ApplicationController
     @transfers_summary = {}
     @balance_by_org = {}
     @transfers_by_month = {}
+    @chart_data = { balance: [], time_series: {} }
 
     all_movements = Movement.where(account_id: current_organization.account.id)
                           .where(created_at: @from_date.beginning_of_day..@to_date.end_of_day)
@@ -145,6 +146,8 @@ class StatisticsController < ApplicationController
 
       outgoing_total_seconds = outgoing_movements.sum(&:amount).abs
       incoming_total_seconds = incoming_movements.sum(&:amount)
+      balance_hours = (incoming_total_seconds - outgoing_total_seconds) / 3600.0
+      balance_rounded = balance_hours.round(2)
 
       @transfers_summary[org.id] = {
         name: org.name,
@@ -157,10 +160,20 @@ class StatisticsController < ApplicationController
 
       @balance_by_org[org.id] = {
         name: org.name,
-        balance: (incoming_total_seconds - outgoing_total_seconds) / 3600.0
+        balance: balance_rounded
+      }
+      
+      @chart_data[:balance] << {
+        y: balance_rounded,
+        name: org.name,
+        color: balance_hours >= 0 ? '#27ae60' : '#e74c3c'
       }
 
       months_data = {}
+      chart_months = []
+      chart_outgoing = []
+      chart_incoming = []
+      chart_balance = []
       
       month_periods.each do |month, date_range|
         month_outgoing_movements = outgoing_movements.select { |m| date_range.cover?(m.created_at) }
@@ -169,12 +182,20 @@ class StatisticsController < ApplicationController
         outgoing_seconds = month_outgoing_movements.sum(&:amount).abs
         incoming_seconds = month_incoming_movements.sum(&:amount)
         
+        outgoing_hours = (outgoing_seconds / 3600.0).round(2)
+        incoming_hours = (incoming_seconds / 3600.0).round(2)
+        balance_hours = ((incoming_seconds - outgoing_seconds) / 3600.0).round(2)
+        
         month_name = I18n.l(month, format: "%B %Y")
+        chart_months << month_name
+        chart_outgoing << outgoing_hours
+        chart_incoming << incoming_hours
+        chart_balance << balance_hours
         
         months_data[month_name] = {
-          outgoing: (outgoing_seconds / 3600.0).round(2),
-          incoming: (incoming_seconds / 3600.0).round(2),
-          balance: ((incoming_seconds - outgoing_seconds) / 3600.0).round(2)
+          outgoing: outgoing_hours,
+          incoming: incoming_hours,
+          balance: balance_hours
         }
       end
 
@@ -182,6 +203,17 @@ class StatisticsController < ApplicationController
         name: org.name,
         months: months_data
       }
+      
+      @chart_data[:time_series][org.id] = {
+        months: chart_months,
+        outgoing: chart_outgoing,
+        incoming: chart_incoming,
+        balance: chart_balance
+      }
+    end
+    
+    @chart_data[:summary] = @transfers_summary.map do |org_id, data|
+      { name: data[:name], y: data[:total_transfers] }
     end
   end
 
