@@ -102,15 +102,16 @@ class StatisticsController < ApplicationController
       return
     end
 
-    @organizations_to_process = @allied_organizations
 
-    if params[:target_organization_id].present?
-      @target_organization = Organization.find_by(id: params[:target_organization_id])
-      @organizations_to_process = @allied_organizations.where(id: params[:target_organization_id]) if @target_organization
-    end
+    @organizations_to_process = if params[:target_organization_id].present?
+                                  @target_organization = Organization.find_by(id: params[:target_organization_id])
+                                  @target_organization ? @allied_organizations.where(id: @target_organization.id) : @allied_organizations
+                                else
+                                  @allied_organizations
+                                end
 
-    from_date = params[:from].presence.try(:to_date) || DateTime.now.to_date - 3.month
-    to_date = params[:to].presence.try(:to_date) || DateTime.now.to_date
+    @from_date = params[:from].presence&.to_date || 3.months.ago.to_date
+    @to_date = params[:to].presence&.to_date || Date.current
 
     @transfers_summary = {}
     @balance_by_org = {}
@@ -122,13 +123,13 @@ class StatisticsController < ApplicationController
 
       outgoing_movements = Movement.where(account_id: current_organization.account.id)
                                  .where("amount < 0")
-                                 .where(created_at: from_date.beginning_of_day..to_date.end_of_day)
+                                 .where(created_at: @from_date.beginning_of_day..@to_date.end_of_day)
                                  .joins(:transfer)
                                  .select { |m| m.transfer.movements.any? { |other_m| other_m.account_id == org.account.id } }
 
       incoming_movements = Movement.where(account_id: current_organization.account.id)
                                  .where("amount > 0")
-                                 .where(created_at: from_date.beginning_of_day..to_date.end_of_day)
+                                 .where(created_at: @from_date.beginning_of_day..@to_date.end_of_day)
                                  .joins(:transfer)
                                  .select { |m| m.transfer.movements.any? { |other_m| other_m.account_id == org.account.id } }
 
@@ -153,7 +154,7 @@ class StatisticsController < ApplicationController
       }
 
       months_data = {}
-      month_range = (from_date.to_date..to_date.to_date).map { |d| Date.new(d.year, d.month, 1) }.uniq
+      month_range = (@from_date.to_date..@to_date.to_date).map { |d| Date.new(d.year, d.month, 1) }.uniq
 
       month_range.each do |month|
         month_start = month.beginning_of_month
