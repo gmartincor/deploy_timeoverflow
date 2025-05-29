@@ -102,9 +102,11 @@ class StatisticsController < ApplicationController
       return
     end
 
+    @organizations_to_process = @allied_organizations
+
     if params[:target_organization_id].present?
       @target_organization = Organization.find_by(id: params[:target_organization_id])
-      @allied_organizations = @allied_organizations.where(id: params[:target_organization_id]) if @target_organization
+      @organizations_to_process = @allied_organizations.where(id: params[:target_organization_id]) if @target_organization
     end
 
     from_date = params[:from].presence.try(:to_date) || DateTime.now.to_date - 3.month
@@ -114,7 +116,7 @@ class StatisticsController < ApplicationController
     @balance_by_org = {}
     @transfers_by_month = {}
 
-    @allied_organizations.each do |org|
+    @organizations_to_process.each do |org|
       alliance = current_organization.alliance_with(org)
       next unless alliance&.accepted?
 
@@ -181,9 +183,6 @@ class StatisticsController < ApplicationController
   protected
 
   def count_offers_by_label(offers)
-    # Cannot use Hash.new([0, 0]) because then counters[key][0] += n
-    # will modify directly the "global default" instead of
-    # first assigning a new array with the zeroed counters.
     counters = Hash.new { |h, k| h[k] = [0, 0] }
 
     offers.each do |offer|
