@@ -640,6 +640,7 @@ en:
       balance_accessibility_desc: "Balance resulting from transfers"
       total_transfers_accessibility_desc: "Total number of transfers with each organization"
       months_accessibility_desc: "Months of the analyzed period"
+      scroll_indicator: "Scroll horizontally to see more"
   stats:
     min_balance:
       title: Users Minimum Balance

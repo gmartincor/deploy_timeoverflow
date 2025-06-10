@@ -642,6 +642,7 @@ es:
       balance_accessibility_desc: "Balance resultante de las transferencias"
       total_transfers_accessibility_desc: "Número total de transferencias con cada organización"
       months_accessibility_desc: "Meses del período analizado"
+      scroll_indicator: "Desliza horizontalmente para ver más"
   stats:
     min_balance:
       title: Usuarios Saldo Mínimo
