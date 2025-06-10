@@ -4,19 +4,16 @@
     min-height: 100vh;
 }
 
-.statistics-header {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
 .page-title {
     color: #2c3e50;
     font-size: 2.5rem;
     font-weight: 600;
-    margin: 0;
 }
 
-.header-icon {
+.header-icon, 
+.section-title i,
+.filter-label i,
+.card-title i {
     color: #3498db;
     margin-right: 10px;
 }
@@ -24,9 +21,9 @@
 .organization-header {
     background: #2797af; 
     color: white;
-    padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
+    padding: 20px;
     text-align: center;
 }
 
@@ -35,25 +32,9 @@
     font-size: 1.8rem;
 }
 
-.organization-title i {
-    margin-right: 10px;
-}
-
-.filters-section {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
-
 .filter-label {
     color: #495057;
     font-weight: 500;
-}
-
-.filter-label i {
-    margin-right: 5px;
-    color: #3498db;
 }
 
 .form-select-styled,
@@ -69,45 +50,12 @@
     box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
 }
 
-.apply-filters-btn {
-    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    border: none;
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: transform 0.3s ease;
-}
-
-.apply-filters-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.summary-section {
-    margin-top: 40px;
-}
-
 .section-title {
     color: #2c3e50;
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 3px solid  #2797af;  
-}
-
-.section-title i {
-    color: #3498db;
-    margin-right: 10px;
-}
-
-.table-container {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-}
-
-.alliance-table {
-    margin: 0;
+    border-bottom: 3px solid #2797af;
 }
 
 .table-header {
@@ -121,14 +69,6 @@
     border: none;
 }
 
-.table-row:hover {
-    background: #f1f3f5;
-}
-
-.organization-name {
-    font-weight: 500;
-}
-
 .org-link {
     color: #2c3e50;
     text-decoration: none;
@@ -140,9 +80,9 @@
 }
 
 .chart-card {
-    margin-bottom: 30px;
     border: none;
     border-radius: 10px;
+    margin-bottom: 30px;
     transition: transform 0.3s ease;
 }
 
@@ -155,14 +95,8 @@
     color: #2c3e50;
     font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid #e0e0e0;
-}
-
-.card-title i {
-    color: #3498db;
-    margin-right: 10px;
 }
 
 .chart-container {

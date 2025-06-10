@@ -1,5 +1,5 @@
 <div class="alliance-statistics-container" role="main" aria-labelledby="alliance-statistics-title">
-    <div class="statistics-header">
+    <div class="text-center mb-4">
         <h1 id="alliance-statistics-title" class="page-title">
             <i class="fas fa-handshake header-icon" aria-hidden="true"></i>
             <%= t 'global.statistics' %>: <%= t '.alliance_transfers' %>
@@ -7,8 +7,8 @@
     </div>
 
     <% if @no_alliances %>
-        <div class="alert alert-info alliance-alert" role="alert">
-            <i class="fas fa-info-circle" aria-hidden="true"></i>
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
             <%= t '.no_alliances' %>
         </div>
     <% else %>
@@ -23,7 +23,7 @@
                     </div>
                 <% end %>
                 
-                <div class="filters-section" role="search">
+                <div class="bg-light p-3 rounded mb-4" role="search">
                     <form class="row g-3 align-items-end" aria-label="<%= t '.filter_form_label' %>">
                         <div class="col-12 col-md-4">
                             <label for="target_organization_id" class="form-label filter-label">
@@ -55,21 +55,21 @@
                             <div id="to-date-help" class="visually-hidden"><%= t '.to_date_help' %></div>
                         </div>
                         <div class="col-12 col-md-2">
-                            <button class="btn btn-secondary" type="submit" aria-label="<%= t '.apply_filters_aria' %>">
-                                <i class="fas fa-search" aria-hidden="true"></i>
+                            <button class="btn btn-secondary w-100" type="submit" aria-label="<%= t '.apply_filters_aria' %>">
+                                <i class="fas fa-search me-1" aria-hidden="true"></i>
                                 <%= t '.apply_filters' %>
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="summary-section" role="region" aria-labelledby="summary-section-title">
-                    <h3 id="summary-section-title" class="section-title">
+                <div class="mt-4" role="region" aria-labelledby="summary-section-title">
+                    <h3 id="summary-section-title" class="section-title mb-3">
                         <i class="fas fa-exchange-alt" aria-hidden="true"></i>
                         <%= t '.transfers_summary' %>
                     </h3>
-                    <div class="table-responsive-md"> 
-                        <table class="table table-hover alliance-table" aria-labelledby="summary-section-title" style="min-width: 800px;"> <!-- Añadido min-width para asegurar que la tabla no se comprima demasiado -->
+                    <div class="table-responsive-md">
+                        <table class="table table-hover" aria-labelledby="summary-section-title" style="min-width: 800px;">
                             <caption class="visually-hidden"><%= t '.table_summary' %></caption>
                             <thead class="table-header">
                                 <tr>
@@ -83,23 +83,23 @@
                             </thead>
                             <tbody>
                                 <% @transfers_summary.each do |org_id, data| %>
-                                    <tr class="table-row">
-                                        <th scope="row" class="organization-name">
+                                    <tr>
+                                        <th scope="row" class="fw-medium">
                                             <%= link_to data[:name], organization_path(org_id), class: "org-link", aria: { label: t('.view_organization', org: data[:name]) } %>
                                         </th>
-                                        <td class="text-center outgoing-data" data-label="<%= t '.outgoing_transfers' %>">
+                                        <td class="text-center" data-label="<%= t '.outgoing_transfers' %>">
                                             <span class="badge bg-danger rounded-pill"><%= data[:outgoing_count] %></span>
                                         </td>
-                                        <td class="text-center incoming-data" data-label="<%= t '.incoming_transfers' %>">
+                                        <td class="text-center" data-label="<%= t '.incoming_transfers' %>">
                                             <span class="badge bg-success rounded-pill"><%= data[:incoming_count] %></span>
                                         </td>
-                                        <td class="text-center hours-data" data-label="<%= t '.outgoing_hours' %>">
+                                        <td class="text-center" data-label="<%= t '.outgoing_hours' %>">
                                             <span class="text-danger fw-bold"><%= data[:outgoing_hours] %></span>
                                         </td>
-                                        <td class="text-center hours-data" data-label="<%= t '.incoming_hours' %>">
+                                        <td class="text-center" data-label="<%= t '.incoming_hours' %>">
                                             <span class="text-success fw-bold"><%= data[:incoming_hours] %></span>
                                         </td>
-                                        <td class="text-center total-data" data-label="<%= t '.total_transfers' %>">
+                                        <td class="text-center" data-label="<%= t '.total_transfers' %>">
                                             <span class="badge bg-primary rounded-pill"><%= data[:total_transfers] %></span>
                                         </td>
                                     </tr>
@@ -115,13 +115,13 @@
             <div class="col-12 col-lg-6">
                 <div class="card shadow-sm chart-card">
                     <div class="card-body">
-                        <h3 id="balance-chart-title" class="card-title">
+                        <h3 id="balance-chart-title" class="card-title mb-3">
                             <i class="fas fa-balance-scale" aria-hidden="true"></i>
                             <%= t '.balance_chart' %>
                         </h3>
                         <div id="balance-chart" class="chart-container" aria-labelledby="balance-chart-title" role="img" aria-describedby="balance-chart-desc"></div>
                         <p id="balance-chart-desc" class="visually-hidden"><%= t '.balance_chart_desc' %></p>
-                        <div class="chart-data-table sr-only visually-hidden">
+                        <div class="visually-hidden">
                             <table aria-labelledby="balance-chart-title">
                                 <caption><%= t '.balance_data_table' %></caption>
                                 <thead>
@@ -146,7 +146,7 @@
             <div class="col-12 col-lg-6">
                 <div class="card shadow-sm chart-card">
                     <div class="card-body">
-                        <h3 id="time-chart-title" class="card-title">
+                        <h3 id="time-chart-title" class="card-title mb-3">
                             <i class="fas fa-chart-area" aria-hidden="true"></i>
                             <%= t '.transfers_over_time' %>
                         </h3>
@@ -159,7 +159,7 @@
                             <% end %>
                         </p>
                         <% if @target_organization && @transfers_by_month[@target_organization.id] %>
-                        <div class="chart-data-table sr-only visually-hidden">
+                        <div class="visually-hidden">
                             <table aria-labelledby="time-chart-title">
                                 <caption><%= t '.time_data_table', org: @target_organization.name %></caption>
                                 <thead>
