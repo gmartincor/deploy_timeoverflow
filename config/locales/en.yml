@@ -732,3 +732,12 @@ en:
       next: Next
       previous: Previous
       truncate: Truncate
+  highcharts:
+    view_fullscreen: "View in full screen"
+    exit_fullscreen: "Exit from full screen"
+    print_chart: "Print chart"
+    download_pdf: "Download PDF"
+    download_png: "Download PNG"
+    download_jpeg: "Download JPEG"
+    download_svg: "Download SVG"
+    context_button_title: "Chart context menu"

@@ -6,7 +6,7 @@
     <% I18n.available_locales.each do |locale| %>
       <% if I18n.locale != locale %>
         <li>
-          <%= link_to t("locales.#{locale}", locale: locale), switch_lang_path(locale: locale), class: 'dropdown-item' %>
+          <%= link_to t("locales.#{locale}", locale: locale), switch_lang_path(locale: locale), class: 'dropdown-item', data: { turbo: false } %>
         </li>
       <% end %>
     <% end %>

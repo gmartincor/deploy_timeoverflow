@@ -736,3 +736,12 @@ es:
       next: Siguiente &rsaquo;
       previous: "&lsaquo; Anterior"
       truncate: "&hellip;"
+  highcharts:
+    view_fullscreen: "Ver en pantalla completa"
+    exit_fullscreen: "Salir de pantalla completa"
+    print_chart: "Imprimir gráfico"
+    download_pdf: "Descargar PDF"
+    download_png: "Descargar PNG"
+    download_jpeg: "Descargar JPEG"
+    download_svg: "Descargar SVG"
+    context_button_title: "Opciones de exportación"

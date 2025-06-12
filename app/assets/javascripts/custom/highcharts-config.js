@@ -1,20 +1,28 @@
 (function() {
   function initializeConfiguration() {
     if (typeof Highcharts === 'undefined') {
+      if (window.highchartsInitAttempts >= 30) {
+        return;
+      }
+      
+      window.highchartsInitAttempts = (window.highchartsInitAttempts || 0) + 1;
       setTimeout(initializeConfiguration, 100);
       return;
     }
 
     Highcharts.getOptions().lang = Highcharts.getOptions().lang || {};
     var lang = Highcharts.getOptions().lang;
-    lang.viewFullscreen = lang.viewFullscreen || "Ver en pantalla completa";
-    lang.exitFullscreen = lang.exitFullscreen || "Salir de pantalla completa";
-    lang.printChart = lang.printChart || "Imprimir gráfico";
-    lang.downloadPDF = lang.downloadPDF || "Descargar PDF";
-    lang.downloadPNG = lang.downloadPNG || "Descargar PNG";
-    lang.downloadJPEG = lang.downloadJPEG || "Descargar JPEG";
-    lang.downloadSVG = lang.downloadSVG || "Descargar SVG";
-    lang.contextButtonTitle = lang.contextButtonTitle || "Opciones de exportación";
+    
+    if (window.highchartsI18n) {
+      lang.viewFullscreen = window.highchartsI18n.viewFullscreen;
+      lang.exitFullscreen = window.highchartsI18n.exitFullscreen;
+      lang.printChart = window.highchartsI18n.printChart;
+      lang.downloadPDF = window.highchartsI18n.downloadPDF;
+      lang.downloadPNG = window.highchartsI18n.downloadPNG;
+      lang.downloadJPEG = window.highchartsI18n.downloadJPEG;
+      lang.downloadSVG = window.highchartsI18n.downloadSVG;
+      lang.contextButtonTitle = window.highchartsI18n.contextButtonTitle;
+    }
     
     Highcharts.setOptions({
       exporting: {
@@ -26,7 +34,6 @@
     var originalError = Highcharts.error;
     Highcharts.error = function(code, stop) {
       if (code === 28) {
-        console.warn('Highcharts: Error #28 loading images, continuing without image');
         return;
       }
       return originalError.call(this, code, stop);
@@ -46,7 +53,6 @@
       }, 100);
     };
 
-    console.log('Unified Highcharts configuration applied successfully');
   }
   
   if (document.readyState === "complete" || document.readyState === "interactive") {
