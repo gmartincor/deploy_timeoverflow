@@ -1,4 +1,3 @@
-// Este archivo contiene lo necesario para la exportación completa de gráficos Highcharts
 //= require vendor/highcharts
 //= require vendor/highcharts-exporting
 //= require vendor/highcharts-export-data

@@ -1,7 +1,7 @@
 (function() {
-  function iniciarConfiguracion() {
+  function initializeConfiguration() {
     if (typeof Highcharts === 'undefined') {
-      setTimeout(iniciarConfiguracion, 100);
+      setTimeout(initializeConfiguration, 100);
       return;
     }
 
@@ -19,21 +19,14 @@
     Highcharts.setOptions({
       exporting: {
         fallbackToExportServer: false,
-        libURL: '/assets/vendor/export-libs/',
-        buttons: {
-          contextButton: {
-            menuItems: [
-              'downloadPDF'
-            ]
-          }
-        }
+        libURL: '/assets/vendor/export-libs/'
       }
     });
 
     var originalError = Highcharts.error;
     Highcharts.error = function(code, stop) {
       if (code === 28) {
-        console.warn('Highcharts: Error #28 al cargar imágenes, continuando sin la imagen');
+        console.warn('Highcharts: Error #28 loading images, continuing without image');
         return;
       }
       return originalError.call(this, code, stop);
@@ -53,12 +46,12 @@
       }, 100);
     };
 
-    console.log('Configuración unificada de Highcharts aplicada correctamente');
+    console.log('Unified Highcharts configuration applied successfully');
   }
   
   if (document.readyState === "complete" || document.readyState === "interactive") {
-    iniciarConfiguracion();
+    initializeConfiguration();
   } else {
-    document.addEventListener("DOMContentLoaded", iniciarConfiguracion);
+    document.addEventListener("DOMContentLoaded", initializeConfiguration);
   }
 })();
