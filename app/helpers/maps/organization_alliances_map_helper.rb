@@ -3,7 +3,6 @@ module Maps
     def organization_map_data(options = {})
       limit = options[:limit] || 100
 
-      # Ahora seleccionamos explícitamente latitude y longitude
       scope = Organization.select(:id, :name, :city, :address, :neighborhood, :latitude, :longitude)
 
       scope = scope.where(options[:scope]) if options[:scope].present?
@@ -13,14 +12,12 @@ module Maps
         scope = scope.where(id: allied_org_ids + [current_organization.id])
       end
 
-      # Podemos filtrar por organizaciones que ya tienen coordenadas
       if options[:only_geocoded]
         scope = scope.where.not(latitude: nil).where.not(longitude: nil)
       end
 
       orgs = scope.limit(limit)
 
-      # Ahora no necesitamos hacer caché, directamente usamos los valores almacenados
       orgs.map do |org|
         {
           id: org.id,
@@ -60,18 +57,15 @@ module Maps
     end
 
     def preload_organization_geocoding(limit = 20)
-      # Buscamos organizaciones que necesitan geocodificación
       organizations = Organization.where(latitude: nil).or(Organization.where(longitude: nil))
                               .limit(limit)
                               .select(:id, :name, :city, :address, :neighborhood)
 
-      # Creamos un hilo en segundo plano
       Thread.new do
         organizations.each do |org|
           begin
             org.geocode_address if org.needs_geocoding?
 
-            # Pausa para no sobrecargar Nominatim
             sleep(1.2)
           rescue StandardError => e
             Rails.logger.error("Error geocoding #{org.name}: #{e.message}")
@@ -80,7 +74,6 @@ module Maps
       rescue StandardError => e
         Rails.logger.error("Preload geocoding error: #{e.message}")
       ensure
-        # Liberar la conexión
         ActiveRecord::Base.connection_pool.release_connection
       end
     end
