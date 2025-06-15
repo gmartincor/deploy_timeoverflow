@@ -10,20 +10,6 @@
       return;
     }
 
-    Highcharts.getOptions().lang = Highcharts.getOptions().lang || {};
-    var lang = Highcharts.getOptions().lang;
-    
-    if (window.highchartsI18n) {
-      lang.viewFullscreen = window.highchartsI18n.viewFullscreen;
-      lang.exitFullscreen = window.highchartsI18n.exitFullscreen;
-      lang.printChart = window.highchartsI18n.printChart;
-      lang.downloadPDF = window.highchartsI18n.downloadPDF;
-      lang.downloadPNG = window.highchartsI18n.downloadPNG;
-      lang.downloadJPEG = window.highchartsI18n.downloadJPEG;
-      lang.downloadSVG = window.highchartsI18n.downloadSVG;
-      lang.contextButtonTitle = window.highchartsI18n.contextButtonTitle;
-    }
-    
     Highcharts.setOptions({
       exporting: {
         fallbackToExportServer: false,
